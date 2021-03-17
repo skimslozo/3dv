@@ -14,3 +14,6 @@
 * [Project Propsal: Latex](https://www.overleaf.com/project/60489a2f4a789faf8b9b6a97)
 
 To set up google football simulation go to https://github.com/google-research/football
+
+## Project Managment 
+In general, for every task do a github issue
