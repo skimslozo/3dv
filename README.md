@@ -1,3 +1,7 @@
+<p align="left" width="100%">
+  <img height="100" src="img/topbar.png"> &nbsp; &nbsp; 
+</p>
+
 # 3D Vision Project: Soccer Ball Detection and Tracking
 ## Marian, Jason, Miks & Jannik
 
