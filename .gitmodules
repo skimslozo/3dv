@@ -1,3 +1,0 @@
-[submodule "football"]
-	path = football
-	url = https://github.com/google-research/football.git
