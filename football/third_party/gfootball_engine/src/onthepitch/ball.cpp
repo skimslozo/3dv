@@ -26,7 +26,7 @@
 
 #include "../main.hpp"
 
-constexpr float bounce = 0.62f;  // 1 = full bounce, 0 = no bounce
+constexpr float bounce = 0.65f;  // 1 = full bounce, 0 = no bounce
 constexpr float linearBounce = 0.06f;  // bigger = more brake force
 constexpr float drag = 0.015f;  // bigger = more
 constexpr float friction = 0.04f;  // bigger = more

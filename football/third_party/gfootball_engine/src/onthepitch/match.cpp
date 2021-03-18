@@ -150,7 +150,7 @@ Match::Match(MatchData *matchData, const std::vector<AIControlledKeyboard *> &co
   GetScene3D()->CreateSystemObjects(camera);
   camera->Init();
 
-  camera->SetFOV(25);
+  camera->SetFOV(100);
   cameraNode = boost::intrusive_ptr<Node>(new Node("cameraNode"));
   cameraNode->AddObject(camera);
   cameraNode->SetPosition(Vector3(40, 0, 100));
@@ -588,6 +588,8 @@ void Match::UpdateIngameCamera() {
               -41.4f - (_default_CameraFOV * 3.7f) + std::pow(height, 1.2f) * 0.46f,
               10.0f + height) *
               zoom;
+
+
       cameraFOV = (fov * 28.0f) - (cameraNodePosition.coords[1] / 30.0f);
       cameraNearCap = cameraNodePosition.coords[2];
       cameraFarCap = 200;
