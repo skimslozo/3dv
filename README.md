@@ -12,6 +12,7 @@
 * [Project Proposal Outline](https://docs.google.com/document/d/17Tfdv_uZz8P1Bmt9VpqbMHXWcxzVBZuWPozLdoFZHRE/edit
 )
 * [Project Propsal: Latex](https://www.overleaf.com/project/60489a2f4a789faf8b9b6a97)
+* [Paper Presentation Slides](https://docs.google.com/presentation/d/1S3GxRsPdXZiqShj0OZToLz6usqU2533UunqTbY_e2UY/edit#slide=id.p)
 
 To set up google football simulation go to https://github.com/google-research/football
 
