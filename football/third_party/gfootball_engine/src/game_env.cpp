@@ -127,6 +127,42 @@ SharedInfo GameEnv::get_info() {
   return info;
 }
 
+Vector3 GameEnv::getCameraNodePosition() {
+  Vector3 tmp = GetGameTask()->GetMatch()->cameraNodePosition;
+  return tmp;
+}
+
+Quaternion GameEnv::getCameraOrientation() {
+  Quaternion tmp = GetGameTask()->GetMatch()->cameraOrientation;
+    return tmp;
+}
+
+Quaternion GameEnv::getCameraNodeOrientation() {
+  Quaternion tmp = GetGameTask()->GetMatch()->cameraNodeOrientation;
+    return tmp;
+}
+
+float GameEnv::getCameraFOV() {
+  float tmp = GetGameTask()->GetMatch()->cameraFOV;
+    return tmp;
+}
+
+void GameEnv::setCameraFOV(float tmp) {
+  GetGameTask()->GetMatch()->cameraFOV = tmp;
+}
+
+void GameEnv::setCameraNodePosition(Vector3 tmp) {
+  GetGameTask()->GetMatch()->cameraNodePosition = tmp;
+}
+
+void GameEnv::setCameraOrientation(Quaternion tmp) {
+  GetGameTask()->GetMatch()->cameraOrientation = tmp;
+}
+
+void GameEnv::setCameraNodeOrientation(Quaternion tmp) {
+  GetGameTask()->GetMatch()->cameraNodeOrientation = tmp;
+}
+
 screenshoot GameEnv::get_frame() {
   SetGame(this);
   return GetGraphicsSystem()->GetScreen();

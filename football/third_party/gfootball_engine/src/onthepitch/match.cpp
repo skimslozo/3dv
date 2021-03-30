@@ -577,9 +577,9 @@ void Match::UpdateIngameCamera() {
 
       float distRot = average.coords[1] / 800.0f;
 
-      cameraOrientation.SetAngleAxis(distRot + (0.42f - height * 0.01f) * pi, Vector3(1, 0, 0));
-      cameraNodeOrientation.SetAngleAxis((-average.coords[0] / pitchHalfW) * (1.0f - angleFac) * 0.25f * pi * 1.24f, Vector3(0, 0, 1));
-      cameraNodePosition =
+      //cameraOrientation.SetAngleAxis(distRot + (0.42f - height * 0.01f) * pi, Vector3(1, 0, 0));
+      //cameraNodeOrientation.SetAngleAxis((-average.coords[0] / pitchHalfW) * (1.0f - angleFac) * 0.25f * pi * 1.24f, Vector3(0, 0, 1));
+      /*cameraNodePosition =
           average * Vector3(1.0f * (1.0f - _default_CameraAngleFactor * 0.2f) *
                                 (1.0f - _default_CameraZoom * 0.3f),
                             0.9f - _default_CameraZoom * 0.3f, 0.2f) +
@@ -587,7 +587,7 @@ void Match::UpdateIngameCamera() {
               0,
               -41.4f - (_default_CameraFOV * 3.7f) + std::pow(height, 1.2f) * 0.46f,
               10.0f + height) *
-              zoom;
+              zoom; */
 
 
       cameraFOV = (fov * 28.0f) - (cameraNodePosition.coords[1] / 30.0f);
