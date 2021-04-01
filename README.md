@@ -14,6 +14,7 @@
 * [Project Propsal: Latex](https://www.overleaf.com/project/60489a2f4a789faf8b9b6a97)
 * [Paper Presentation Slides](https://docs.google.com/presentation/d/1S3GxRsPdXZiqShj0OZToLz6usqU2533UunqTbY_e2UY/edit#slide=id.p)
 * [Tracking without Bells and Whistles Paper](https://arxiv.org/pdf/1903.05625.pdf)
+* [Meeting Notes](https://docs.google.com/presentation/d/1Qc-awR3Rm8LvFofIlVhyMQX5Vdfm6IE92jTrVlCi2Co/edit#slide=id.gccea4da259_0_415)
 
 To set up google football simulation go to https://github.com/google-research/football
 
