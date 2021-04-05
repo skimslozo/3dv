@@ -28,78 +28,12 @@ using std::string;
 
 class GameEnv_Python : public GameEnv {
  public:
-
-void set_camera_fov_py(float fov) {
-    ContextHolder c(this);
-    setCameraFOV(fov);
-  }
-
-   void set_camera_node_position_py(float x, float y, float z) {
-    ContextHolder c(this);
-    Vector3 tmp(x,y,z);
-    setCameraNodePosition(tmp);
-  }
-     void set_camera_node_orientation_py(float x, float y, float z, float w) {
-    ContextHolder c(this);
-    Quaternion tmp(x,y,z, w);
-    setCameraNodeOrientation(tmp);
-  }
-
-  void set_camera_orientation_py(float x, float y, float z, float w) {
-    ContextHolder c(this);
-    Quaternion tmp(x,y,z, w);
-    setCameraOrientation(tmp);
-  }
-
-
   PyObject* get_frame_python() {
     ContextHolder c(this);
     screenshoot screen = get_frame();
     PyObject* str = PyBytes_FromStringAndSize(screen.data(), screen.size());
     return str;
   }
-
-    float get_camera_fov_py() {
-      float tmp = getCameraFOV();
-    return tmp;
-  }
-
-
-  bp::list get_camera_node_position_py() {
-    ContextHolder c(this);
-    Vector3 tmp = getCameraNodePosition();
-    bp::list l;
-    l.append(tmp.coords[0]);
-    l.append(tmp.coords[1]);
-    l.append(tmp.coords[2]);
-
-    return l;
-  }
-
-
-  bp::list get_camera_orientation_py() {
-    ContextHolder c(this);
-    Quaternion tmp = getCameraOrientation();
-    bp::list l;
-    l.append(tmp.elements[0]);
-    l.append(tmp.elements[1]);
-    l.append(tmp.elements[2]);
-    l.append(tmp.elements[3]);
-    return l;
-  }
-
-
-    bp::list get_camera_node_orientation_py() {
-    ContextHolder c(this);
-    Quaternion tmp = getCameraNodeOrientation();
-    bp::list l;
-    l.append(tmp.elements[0]);
-    l.append(tmp.elements[1]);
-    l.append(tmp.elements[2]);
-    l.append(tmp.elements[3]);
-    return l;
-  }
-
 
   PyObject* get_state_python(const std::string& to_pickle) {
     std::string state = get_state(to_pickle);
@@ -211,24 +145,11 @@ BOOST_PYTHON_MODULE(_gameplayfootball) {
       .def_readwrite("state", &GameEnv_Python::state)
       .def_readwrite("waiting_for_game_count",
                      &GameEnv_Python::waiting_for_game_count)
-      .def("tracker_setup", &GameEnv::tracker_setup)
-      .def("get_camera_node_position", &GameEnv_Python::get_camera_node_position_py)
-      .def("get_camera_orientation", &GameEnv_Python::get_camera_orientation_py)
-      .def("get_camera_node_orientation", &GameEnv_Python::get_camera_node_orientation_py)
-      .def("set_camera_node_position", &GameEnv_Python::set_camera_node_position_py)
-      .def("set_camera_orientation", &GameEnv_Python::set_camera_orientation_py)
-      .def("set_camera_node_orientation", &GameEnv_Python::set_camera_node_orientation_py)
-      .def("set_camera_fov", &GameEnv_Python::set_camera_fov_py)
-      .def("get_camera_fov", &GameEnv_Python::get_camera_fov_py);
+      .def("tracker_setup", &GameEnv::tracker_setup);
 
   class_<Vector3>("Vector3", init<float, float, float>())
      .def("__getitem__", &Vector3::GetEnvCoord)
      .def("__setitem__", &Vector3::SetEnvCoord);
-
-  class_<Quaternion>("Quaternion", init<float, float, float, float>())
-     .def("__getitem__", &Quaternion::GetAngles)
-     .def("__setitem__", &Quaternion::SetAngles);
-
 
   class_<GameConfig, SHARED_PTR<GameConfig>, boost::noncopyable>("GameConfig", no_init)
       .def("make", &GameConfig::make)

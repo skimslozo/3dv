@@ -127,42 +127,6 @@ SharedInfo GameEnv::get_info() {
   return info;
 }
 
-Vector3 GameEnv::getCameraNodePosition() {
-  Vector3 tmp = GetGameTask()->GetMatch()->cameraNodePosition;
-  return tmp;
-}
-
-Quaternion GameEnv::getCameraOrientation() {
-  Quaternion tmp = GetGameTask()->GetMatch()->cameraOrientation;
-    return tmp;
-}
-
-Quaternion GameEnv::getCameraNodeOrientation() {
-  Quaternion tmp = GetGameTask()->GetMatch()->cameraNodeOrientation;
-    return tmp;
-}
-
-float GameEnv::getCameraFOV() {
-  float tmp = GetGameTask()->GetMatch()->cameraFOV;
-    return tmp;
-}
-
-void GameEnv::setCameraFOV(float tmp) {
-  GetGameTask()->GetMatch()->cameraFOV = tmp;
-}
-
-void GameEnv::setCameraNodePosition(Vector3 tmp) {
-  GetGameTask()->GetMatch()->cameraNodePosition = tmp;
-}
-
-void GameEnv::setCameraOrientation(Quaternion tmp) {
-  GetGameTask()->GetMatch()->cameraOrientation = tmp;
-}
-
-void GameEnv::setCameraNodeOrientation(Quaternion tmp) {
-  GetGameTask()->GetMatch()->cameraNodeOrientation = tmp;
-}
-
 screenshoot GameEnv::get_frame() {
   SetGame(this);
   return GetGraphicsSystem()->GetScreen();
@@ -383,7 +347,7 @@ void GameEnv::step() {
 }
 
 void GameEnv::ProcessState(EnvState* state) {
-  state->process(&this->state, sizeof(this->state));
+  state->process(this->state);
   state->process(waiting_for_game_count);
   context->ProcessState(state);
   context->gameTask->GetMatch()->ProcessState(state);

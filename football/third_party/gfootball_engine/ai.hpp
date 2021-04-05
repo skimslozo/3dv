@@ -45,17 +45,6 @@ struct GameEnv {
   // Get the current rendered frame.
   PyObject* get_frame();
 
-  // Get the current rendered frame.
-  bp::list get_camera_node_orientation();
-  bp::list get_camera_orientation();
-  bp::list get_camera_node_position();
-  float get_camera_fov();
-
-  void set_camera_node_orientation(float x, float x, float z, float w);
-  void set_camera_orientation(float x, float x, float z, float w);
-  void set_camera_node_position(float x, float y, float z);
-  void set_camera_fov(float fov);
-
   // Executes the action inside the game.
   void action(int action, bool left_team, int player);
   void reset(ScenarioConfig game_config);

@@ -52,17 +52,6 @@ struct GameEnv {
   // Get the current rendered frame.
   screenshoot get_frame();
 
-    // return the current camera settings
-  Vector3 getCameraNodePosition();
-  Quaternion getCameraOrientation();
-  Quaternion getCameraNodeOrientation();
-  float getCameraFOV();
-
-  void setCameraNodePosition(Vector3 tmp);
-  void setCameraOrientation(Quaternion tmp);
-  void setCameraNodeOrientation(Quaternion tmp);
-  void setCameraFOV(float tmp);
-
   // Executes the action inside the game.
   bool sticky_action_state(int action, bool left_team, int player);
   void action(int action, bool left_team, int player);

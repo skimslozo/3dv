@@ -155,13 +155,6 @@ class Match {
     int SecondTeam() { DO_VALIDATION; return second_team; }
     bool isBallMirrored() { DO_VALIDATION; return ball_mirrored; }
 
-       // camera
-    Quaternion cameraOrientation;
-    Quaternion cameraNodeOrientation;
-    Vector3 cameraNodePosition;
-    float cameraFOV = 0.0f;
-
-
   private:
     bool CheckForGoal(signed int side, const Vector3& previousBallPos);
 
@@ -221,9 +214,12 @@ class Match {
     bool autoUpdateIngameCamera = false;
 
     // camera
-
-    float cameraNearCap = 000.0f;
-    float cameraFarCap = 00.0f;
+    Quaternion cameraOrientation;
+    Quaternion cameraNodeOrientation;
+    Vector3 cameraNodePosition;
+    float cameraFOV = 0.0f;
+    float cameraNearCap = 0.0f;
+    float cameraFarCap = 0.0f;
 
     unsigned int lastBodyBallCollisionTime_ms = 0;
 
