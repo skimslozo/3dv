@@ -94,6 +94,20 @@ Vector3 GetProjectedCoord(const Vector3 &pos3D,
   return result;
 }
 
+Matrix3 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera){
+  DO_VALIDATION;
+  Matrix4 rotMat;
+  rotMat.ConstructInverse(camera->GetDerivedPosition(), Vector3(1, 1, 1), camera->GetDerivedRotation());
+  Matrix3 K(rotMat);
+  return K;
+}
+
+// Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera){
+//   float fov = camera->GetFOV();
+//   float f = 1.0 / tan((fov / 360.0 * pi * 2) / 2.0);
+  
+// }
+
 int GetVelocityID(e_Velocity velo, bool treatDribbleAsWalk) {
   DO_VALIDATION;
   int id = 0;

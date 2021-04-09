@@ -76,7 +76,6 @@ void set_camera_fov_py(float fov) {
     return l;
   }
 
-
   bp::list get_camera_orientation_py() {
     ContextHolder c(this);
     Quaternion tmp = getCameraOrientation();
@@ -88,6 +87,24 @@ void set_camera_fov_py(float fov) {
     return l;
   }
 
+  bp::list get_3d_ball_position() {
+    ContextHolder c(this);
+    Vector3 tmp = Get3DBallPosition();
+    bp::list l;
+    l.append(tmp.coords[0]);
+    l.append(tmp.coords[1]);
+    l.append(tmp.coords[2]);
+    return l;
+    }
+
+  bp::list get_2d_ball_position() {
+    ContextHolder c(this);
+    Vector3 tmp = Get2DBallPosition();
+    bp::list l;
+    l.append(tmp.coords[0]);
+    l.append(tmp.coords[1]);
+    return l;
+    }
 
     bp::list get_camera_node_orientation_py() {
     ContextHolder c(this);
@@ -219,6 +236,8 @@ BOOST_PYTHON_MODULE(_gameplayfootball) {
       .def("set_camera_orientation", &GameEnv_Python::set_camera_orientation_py)
       .def("set_camera_node_orientation", &GameEnv_Python::set_camera_node_orientation_py)
       .def("set_camera_fov", &GameEnv_Python::set_camera_fov_py)
+      .def("get_3d_ball_position", &GameEnv_Python::get_3d_ball_position)
+      .def("get_2d_ball_position", &GameEnv_Python::get_2d_ball_position)
       .def("get_camera_fov", &GameEnv_Python::get_camera_fov_py);
 
   class_<Vector3>("Vector3", init<float, float, float>())

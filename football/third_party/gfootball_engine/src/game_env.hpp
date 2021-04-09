@@ -62,6 +62,8 @@ struct GameEnv {
   void setCameraOrientation(Quaternion tmp);
   void setCameraNodeOrientation(Quaternion tmp);
   void setCameraFOV(float tmp);
+  Vector3 Get3DBallPosition();
+  Vector3 Get2DBallPosition();
 
   // Executes the action inside the game.
   bool sticky_action_state(int action, bool left_team, int player);

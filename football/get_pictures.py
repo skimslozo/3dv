@@ -61,18 +61,18 @@ def main(_):
 
   try:
     while True:
-      # env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-      # env._env._env.set_camera_node_position(-8.10314655303955, -140.77362060546875, 101.3580551147461)
-      # env._env._env.set_camera_orientation(0.5, 0, 0, 0.86)
-      # env._env._env.set_camera_fov(30)
+      env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
+      env._env._env.set_camera_node_position(-8.10314655303955, -140.77362060546875, 101.3580551147461)
+      env._env._env.set_camera_orientation(0.5, 0, 0, 0.86)
+      env._env._env.set_camera_fov(30)
 
       _, _, done, _ = env.step([])     
 
-      print("CNO: ", env._env._env.get_camera_node_orientation())
-      print("CNP: ", env._env._env.get_camera_node_position())
-      print("CO: ", env._env._env.get_camera_orientation())
-      print("CFOV: ", env._env._env.get_camera_fov())
-      print('step')
+      # print("CNO: ", env._env._env.get_camera_node_orientation())
+      # print("CNP: ", env._env._env.get_camera_node_position())
+      # print("CO: ", env._env._env.get_camera_orientation())
+      # print("CFOV: ", env._env._env.get_camera_fov())
+      print('BPOS: ', env._env._env.get_2d_ball_position())
 
       if done:
         env.reset()

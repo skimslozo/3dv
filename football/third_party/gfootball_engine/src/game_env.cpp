@@ -26,6 +26,7 @@
 #include "ai/ai_keyboard.hpp"
 #include "file.h"
 #include "gametask.hpp"
+#include <utils.hpp>
 
 using std::string;
 
@@ -165,6 +166,16 @@ void GameEnv::setCameraOrientation(Quaternion tmp) {
 void GameEnv::setCameraNodeOrientation(Quaternion tmp) {
   GetGameTask()->GetMatch()->cameraNode->custom_orientation = tmp;
   GetGameTask()->GetMatch()->custom_cam = true;
+}
+
+Vector3 GameEnv::Get3DBallPosition() {
+  Vector3 ballPos = GetGameTask()->GetMatch()->GetBall()->GetAveragePosition(10);
+  return ballPos;
+}
+
+Vector3 GameEnv::Get2DBallPosition() {
+  Vector ball2dpos = GetProjectedCoord(Get3DBallPosition(), GetGameTask()->GetMatch()->camera);
+  return ball2dpos;
 }
 
 screenshoot GameEnv::get_frame() {

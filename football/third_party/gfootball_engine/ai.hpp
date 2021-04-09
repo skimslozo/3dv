@@ -49,6 +49,9 @@ struct GameEnv {
   bp::list get_camera_node_orientation();
   bp::list get_camera_orientation();
   bp::list get_camera_node_position();
+  bp::list get_3d_ball_position();
+  bp::list get_2d_ball_position();
+
   float get_camera_fov();
 
   void set_camera_node_orientation(float x, float x, float z, float w);
