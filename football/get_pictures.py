@@ -57,38 +57,23 @@ def main(_):
     env.render()
   env.reset()
 
-  CAMERA_NODE_ORIENTATION = [-0.0, -0.0, -0.0, 1.0]
-  CAMERA_NODE_POSITION = [-8.10314655303955, -140.77362060546875, 71.3580551147461]
-  CAMERA_ORIENTATION = [0.49945083260536194, 0.0, 0.0, 0.8663421869277954]
-  CAMERA_FOV = 24
+
 
   try:
     while True:
-      _, _, done, _ = env.step([])
-      _, _, done, _ = env.step([])
-      _, _, done, _ = env.step([])
-      
-      obs1 = env.observation()
-      env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-      env._env._env.set_camera_node_position(-8.10314655303955, -140.77362060546875, 101.3580551147461)
-      env._env._env.set_camera_orientation(0.5, 0, 0, 0.86)
-      env._env._env.set_camera_fov(30)
+      # env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
+      # env._env._env.set_camera_node_position(-8.10314655303955, -140.77362060546875, 101.3580551147461)
+      # env._env._env.set_camera_orientation(0.5, 0, 0, 0.86)
+      # env._env._env.set_camera_fov(30)
 
-      obs2 = env.observation()
-      env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-      env._env._env.set_camera_node_position(-20.10314655303955, -140.77362060546875, 101.3580551147461)
-      env._env._env.set_camera_orientation(0.5, 0, 0, 0.86)
-      env._env._env.set_camera_fov(30)
+      _, _, done, _ = env.step([])     
 
-      obs3 = env.observation()
+      print("CNO: ", env._env._env.get_camera_node_orientation())
+      print("CNP: ", env._env._env.get_camera_node_position())
+      print("CO: ", env._env._env.get_camera_orientation())
+      print("CFOV: ", env._env._env.get_camera_fov())
+      print('step')
 
-      print(env._env._env.get_camera_node_orientation())
-      print(env._env._env.get_camera_node_position())
-      print(env._env._env.get_camera_orientation())
-      print(env._env._env.get_camera_fov())
-      _, _, done, _ = env.step([])
-
-     
       if done:
         env.reset()
   except KeyboardInterrupt:

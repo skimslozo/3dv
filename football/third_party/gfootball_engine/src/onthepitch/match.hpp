@@ -160,7 +160,10 @@ class Match {
     Quaternion cameraNodeOrientation;
     Vector3 cameraNodePosition;
     float cameraFOV = 0.0f;
-
+    boost::intrusive_ptr<Node> cameraNode;
+    boost::intrusive_ptr<Camera> camera;
+    boost::intrusive_ptr<Node> sunNode;
+    bool custom_cam = false;
 
   private:
     bool CheckForGoal(signed int side, const Vector3& previousBallPos);
@@ -182,11 +185,6 @@ class Match {
     Officials *officials;
 
     boost::intrusive_ptr<Node> dynamicNode;
-
-    boost::intrusive_ptr<Node> cameraNode;
-    boost::intrusive_ptr<Camera> camera;
-    boost::intrusive_ptr<Node> sunNode;
-
     boost::intrusive_ptr<Node> stadiumNode;
 
     const std::vector<AIControlledKeyboard*> &controllers;

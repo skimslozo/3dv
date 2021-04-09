@@ -128,39 +128,43 @@ SharedInfo GameEnv::get_info() {
 }
 
 Vector3 GameEnv::getCameraNodePosition() {
-  Vector3 tmp = GetGameTask()->GetMatch()->cameraNodePosition;
+  Vector3 tmp = GetGameTask()->GetMatch()->cameraNode->GetPosition();
   return tmp;
 }
 
 Quaternion GameEnv::getCameraOrientation() {
-  Quaternion tmp = GetGameTask()->GetMatch()->cameraOrientation;
-    return tmp;
+  Quaternion tmp = GetGameTask()->GetMatch()->camera->GetRotation();
+  return tmp;
 }
 
 Quaternion GameEnv::getCameraNodeOrientation() {
-  Quaternion tmp = GetGameTask()->GetMatch()->cameraNodeOrientation;
-    return tmp;
+  Quaternion tmp = GetGameTask()->GetMatch()->camera->GetRotation();
+  return tmp;
 }
 
 float GameEnv::getCameraFOV() {
-  float tmp = GetGameTask()->GetMatch()->cameraFOV;
-    return tmp;
+  float tmp = GetGameTask()->GetMatch()->camera->GetFOV();
+  return tmp;
 }
 
 void GameEnv::setCameraFOV(float tmp) {
-  GetGameTask()->GetMatch()->cameraFOV = tmp;
+  GetGameTask()->GetMatch()->camera->custom_fov = tmp;
+  GetGameTask()->GetMatch()->custom_cam = true;
 }
 
 void GameEnv::setCameraNodePosition(Vector3 tmp) {
-  GetGameTask()->GetMatch()->cameraNodePosition = tmp;
+  GetGameTask()->GetMatch()->cameraNode->custom_position = tmp;
+  GetGameTask()->GetMatch()->custom_cam = true;
 }
 
 void GameEnv::setCameraOrientation(Quaternion tmp) {
-  GetGameTask()->GetMatch()->cameraOrientation = tmp;
+  GetGameTask()->GetMatch()->camera->custom_orientation  = tmp;
+  GetGameTask()->GetMatch()->custom_cam = true; 
 }
 
 void GameEnv::setCameraNodeOrientation(Quaternion tmp) {
-  GetGameTask()->GetMatch()->cameraNodeOrientation = tmp;
+  GetGameTask()->GetMatch()->cameraNode->custom_orientation = tmp;
+  GetGameTask()->GetMatch()->custom_cam = true;
 }
 
 screenshoot GameEnv::get_frame() {
