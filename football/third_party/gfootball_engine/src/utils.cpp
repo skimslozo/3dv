@@ -94,19 +94,50 @@ Vector3 GetProjectedCoord(const Vector3 &pos3D,
   return result;
 }
 
-Matrix3 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera){
+// Construct the transformation matrix from the world to camear coordinates
+Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
   DO_VALIDATION;
-  Matrix4 rotMat;
-  rotMat.ConstructInverse(camera->GetDerivedPosition(), Vector3(1, 1, 1), camera->GetDerivedRotation());
-  Matrix3 K(rotMat);
+  Matrix3 rotMat;
+  Matrix4 resMat;
+  Vector3 camPos = camera->GetPosition();
+  // I have not rigorously checked the method below, but from the context above and CG conventions, the method below should yield the [R|T] matrix 
+  // rotMat.ConstructInverse(camera->GetDerivedPosition(), Vector3(1, 1, 1), camera->GetDerivedRotation());
+  Quaternion WorldToCameraRot = camera->GetRotation().GetInverse();
+  WorldToCameraRot.Normalize();
+  WorldToCameraRot.ConstructMatrix(rotMat); 
+  resMat = rotMat;
+  resMat.elements[3] = -camPos.coords[0];
+  resMat.elements[7] = -camPos.coords[1];
+  resMat.elements[11] = -camPos.coords[2];
+  return resMat;
+} //TODO: check what K and RT spits out
+
+// Construct the internal parameter matrix. I am assuming that the image is projected on the near clipping plane
+Matrix3 GetIntrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
+  float fov = camera->GetFOV();  
+  Vector3 contextSize3D = GetGraphicsSystem()->GetContextSize();
+  float alpha = contextSize3D.coords[0]/(2*tan((pi/180) * (fov/2))); // Focal length in pixels
+  float u0 = contextSize3D.coords[0]/2;
+  float v0 = contextSize3D.coords[1]/2;
+  Matrix3 K;
+  K.elements[0] = alpha;
+  K.elements[2] = u0;
+  K.elements[4] = alpha;
+  K.elements[5] = v0;
+  K.elements[8] = 1;
   return K;
 }
 
-// Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera){
-//   float fov = camera->GetFOV();
-//   float f = 1.0 / tan((fov / 360.0 * pi * 2) / 2.0);
-  
-// }
+Vector3 GetPixelCoordinates(const Vector3 &pos3D, boost::intrusive_ptr<Camera> camera) { 
+  Matrix4 RT = GetExtrinsicsMatrix(camera);
+  Matrix4 K;
+  K = GetIntrinsicsMatrix(camera);
+  float xp, yp, zp, w;
+  Matrix4 resMat = K * RT;
+  resMat.MultiplyVec4(pos3D.coords[0], pos3D.coords[1], pos3D.coords[2], 1, xp, yp, zp, w);
+  Vector3 out(floor(xp*zp), floor(yp*zp), 0);
+  return out;
+}
 
 int GetVelocityID(e_Velocity velo, bool treatDribbleAsWalk) {
   DO_VALIDATION;

@@ -26,6 +26,7 @@ from absl import logging
 
 from gfootball.env import config
 from gfootball.env import football_env
+import numpy as np
 
 FLAGS = flags.FLAGS
 
@@ -38,6 +39,10 @@ flags.DEFINE_bool('real_time', True,
                   'If true, environment will slow down so humans can play.')
 flags.DEFINE_bool('render', True, 'Whether to do game rendering.')
 
+
+def procOut(cout, size):
+  size = (size[0], size[1])
+  return np.matrix(np.reshape(np.array(cout), size))
 
 def main(_):
   players = FLAGS.players.split(';') if FLAGS.players else ''
@@ -57,23 +62,28 @@ def main(_):
     env.render()
   env.reset()
 
-
-
   try:
     while True:
       env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-      env._env._env.set_camera_node_position(-8.10314655303955, -140.77362060546875, 101.3580551147461)
-      env._env._env.set_camera_orientation(0.5, 0, 0, 0.86)
-      env._env._env.set_camera_fov(30)
+      env._env._env.set_camera_node_position(0, -140, 70)
+      env._env._env.set_camera_orientation(0.505, 0, 0, 0.863)
+      env._env._env.set_camera_fov(90)
 
       _, _, done, _ = env.step([])     
+
+      RT = procOut(env._env._env.get_extrinsics_matrix(), [3, 4])
+      K = procOut(env._env._env.get_intrinsics_matrix(), [3, 3])
+      ball3d = procOut(env._env._env.get_3d_ball_position(), [3, 1])
+      ball2d = procOut(env._env._env.get_2d_ball_position(), [2, 1])
+      camPos = procOut(env._env._env.get_camera_node_position(), [3, 1])
 
       # print("CNO: ", env._env._env.get_camera_node_orientation())
       # print("CNP: ", env._env._env.get_camera_node_position())
       # print("CO: ", env._env._env.get_camera_orientation())
       # print("CFOV: ", env._env._env.get_camera_fov())
-      print('BPOS: ', env._env._env.get_2d_ball_position())
-
+      # print("PIX2D: ", env._env._env.get_pixel_coordinates())
+      # print(RT)
+      print(K)
       if done:
         env.reset()
   except KeyboardInterrupt:

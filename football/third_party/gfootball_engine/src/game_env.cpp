@@ -139,7 +139,7 @@ Quaternion GameEnv::getCameraOrientation() {
 }
 
 Quaternion GameEnv::getCameraNodeOrientation() {
-  Quaternion tmp = GetGameTask()->GetMatch()->camera->GetRotation();
+  Quaternion tmp = GetGameTask()->GetMatch()->cameraNode->GetRotation();
   return tmp;
 }
 
@@ -176,6 +176,21 @@ Vector3 GameEnv::Get3DBallPosition() {
 Vector3 GameEnv::Get2DBallPosition() {
   Vector ball2dpos = GetProjectedCoord(Get3DBallPosition(), GetGameTask()->GetMatch()->camera);
   return ball2dpos;
+}
+
+Matrix4 GameEnv::GetRT() {
+  Matrix4 RT = GetExtrinsicsMatrix(GetGameTask()->GetMatch()->camera);
+  return RT;
+}
+
+Matrix3 GameEnv::GetK() { 
+  Matrix3 K = GetIntrinsicsMatrix(GetGameTask()->GetMatch()->camera);
+  return K;
+}
+
+Vector3 GameEnv::GetPixCoord() { 
+  Vector3 PixCoord = GetPixelCoordinates(Get3DBallPosition(), GetGameTask()->GetMatch()->camera);
+  return PixCoord;
 }
 
 screenshoot GameEnv::get_frame() {

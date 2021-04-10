@@ -51,6 +51,9 @@ struct GameEnv {
   bp::list get_camera_node_position();
   bp::list get_3d_ball_position();
   bp::list get_2d_ball_position();
+  Matrix4 get_extrinsics_matrix();
+  Matrix3 get_intrinsics_matrix();
+  bp::list get_pixel_coordinates();
 
   float get_camera_fov();
 
