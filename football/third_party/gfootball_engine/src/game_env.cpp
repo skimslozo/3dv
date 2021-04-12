@@ -169,7 +169,7 @@ void GameEnv::setCameraNodeOrientation(Quaternion tmp) {
 }
 
 Vector3 GameEnv::Get3DBallPosition() {
-  Vector3 ballPos = GetGameTask()->GetMatch()->GetBall()->GetAveragePosition(10);
+  Vector3 ballPos = GetGameTask()->GetMatch()->GetBall()->GetAveragePosition(1);
   return ballPos;
 }
 

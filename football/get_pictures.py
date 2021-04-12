@@ -13,7 +13,24 @@
 # limitations under the License.
 
 
-"""Script allowing to play the game by multiple players."""
+"""Script allowing to play the game by multiple players.
+
+Use this demo launcher to extract useful info from the simulation directly, real-time. 
+
+Handy functions:
+
+      - set_camera_node_orientation(x, y, z, w) - set the orientation of the camera, input in quaternions
+      - set_camera_node_position(x, y, z) - set the camera poisition. 
+      - set_camera_orientation(x, y, z, w) - set the camera node position. My best guess is that it allows to decouple the viewpoint coordinates from the camera coordinate sysetm
+      - set_camera_fov(24) - set the (half!) horizontal field of view value
+      - get_extrinsics_matrix() - returns the rigid-body transformation matrix from the world coordinates to the camera coordinates
+      - get_intrinsics_matrix() - returns the calibration matrix of the camera
+      - get_3d_ball_position() - returns the 3d ground-truth position of the ball
+      - get_camera_node_position() - returns the camera node position in the world coordinate frame
+      - get_camera_orientation() - returns the camera orientation w.r.t to the world coordinate frame
+      - get_camera_fov() - returns camera fov
+      - get_pixel_coordinates() - returns 2d pixel coordinates of the ball
+"""
 
 from __future__ import absolute_import
 from __future__ import division
@@ -27,6 +44,8 @@ from absl import logging
 from gfootball.env import config
 from gfootball.env import football_env
 import numpy as np
+from scipy.spatial.transform import Rotation as R
+
 
 FLAGS = flags.FLAGS
 
@@ -41,6 +60,14 @@ flags.DEFINE_bool('render', True, 'Whether to do game rendering.')
 
 
 def procOut(cout, size):
+  """Method for post-processing the lists output from the wrapper to numpy matrices
+  
+  Input: 
+    -cout: list (output from the wrapper) to-be processed, n x m
+    -size [a, b]: a list- or tuple-like indiciating the desired shape of the output. a*b = n*m
+    
+  Output:
+    - a x b np.matrix with reordered elemetns of cout in the desired format"""
   size = (size[0], size[1])
   return np.matrix(np.reshape(np.array(cout), size))
 
@@ -62,28 +89,36 @@ def main(_):
     env.render()
   env.reset()
 
+  camrot = np.array([0, 0, 0]) # handy to set the camera coordinates in Euler angles
   try:
     while True:
+      r = R.from_euler('xyz', camrot, degrees = True)
+      carot_quat = r.as_quat()
+
       env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-      env._env._env.set_camera_node_position(0, -140, 70)
-      env._env._env.set_camera_orientation(0.505, 0, 0, 0.863)
-      env._env._env.set_camera_fov(90)
+      env._env._env.set_camera_node_position(0, 0, 80)
+      env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3])
+      env._env._env.set_camera_fov(24)
 
       _, _, done, _ = env.step([])     
 
       RT = procOut(env._env._env.get_extrinsics_matrix(), [3, 4])
       K = procOut(env._env._env.get_intrinsics_matrix(), [3, 3])
       ball3d = procOut(env._env._env.get_3d_ball_position(), [3, 1])
-      ball2d = procOut(env._env._env.get_2d_ball_position(), [2, 1])
+      ball3dh = np.transpose(np.matrix(np.append(np.array(ball3d), 1)))
       camPos = procOut(env._env._env.get_camera_node_position(), [3, 1])
+      camOr = procOut(env._env._env.get_camera_orientation(), [1, 4])
+      fov = env._env._env.get_camera_fov()
+      pixcoord = procOut(env._env._env.get_pixel_coordinates(), [2, 1])
 
       # print("CNO: ", env._env._env.get_camera_node_orientation())
       # print("CNP: ", env._env._env.get_camera_node_position())
       # print("CO: ", env._env._env.get_camera_orientation())
       # print("CFOV: ", env._env._env.get_camera_fov())
-      # print("PIX2D: ", env._env._env.get_pixel_coordinates())
       # print(RT)
-      print(K)
+      print("PIX2D: ", env._env._env.get_pixel_coordinates())
+      # print(ball3d)
+
       if done:
         env.reset()
   except KeyboardInterrupt:

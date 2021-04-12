@@ -48,7 +48,7 @@ class GameEnv_Python : public GameEnv {
 
     void set_camera_orientation_py(float x, float y, float z, float w) {
       ContextHolder c(this);
-      Quaternion tmp(x,y,z, w);
+      Quaternion tmp(x,y,z,w);
       setCameraOrientation(tmp);
     }
 
