@@ -52,6 +52,7 @@ namespace blunted {
       virtual void Poke(e_SystemType targetSystemType);
 
       virtual void RecursiveUpdateSpatialData(e_SpatialDataType spatialDataType, e_SystemType excludeSystem = e_SystemType_None);
+      float custom_fov = 0.0f;
 
     protected:
       float fov = 0.0f;

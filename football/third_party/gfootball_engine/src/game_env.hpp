@@ -53,15 +53,20 @@ struct GameEnv {
   screenshoot get_frame();
 
     // return the current camera settings
-  Vector3 getCameraNodePosition();
-  Quaternion getCameraOrientation();
-  Quaternion getCameraNodeOrientation();
-  float getCameraFOV();
+  Vector3 getCameraNodePosition(int cam);
+  Quaternion getCameraOrientation(int cam);
+  Quaternion getCameraNodeOrientation(int cam);
+  float getCameraFOV(int cam);
 
-  void setCameraNodePosition(Vector3 tmp);
-  void setCameraOrientation(Quaternion tmp);
-  void setCameraNodeOrientation(Quaternion tmp);
-  void setCameraFOV(float tmp);
+  void setCameraNodePosition(Vector3 tmp, int cam);
+  void setCameraOrientation(Quaternion tmp, int cam);
+  void setCameraNodeOrientation(Quaternion tmp, int cam);
+  void setCameraFOV(float tmp, int cam);
+  Matrix4 GetRT(int cam);
+  Matrix3 GetK(int cam);
+  Vector3 Get3DBallPosition();
+  Vector3 Get2DBallPosition();
+  Vector3 GetPixCoord(int cam);
 
   // Executes the action inside the game.
   bool sticky_action_state(int action, bool left_team, int player);

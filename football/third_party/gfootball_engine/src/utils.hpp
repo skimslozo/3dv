@@ -29,6 +29,9 @@ using namespace blunted;
 float GetQuantizedDirectionBias();
 void QuantizeDirection(Vector3 &inputDirection, float bias = 1.0f);
 Vector3 GetProjectedCoord(const Vector3 &pos3D, boost::intrusive_ptr<Camera> camera);
+Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera);
+Matrix3 GetIntrinsicsMatrix(boost::intrusive_ptr<Camera> camera);
+Vector3 GetPixelCoordinates(const Vector3 &pos3D, boost::intrusive_ptr<Camera> camera);
 
 int GetVelocityID(e_Velocity velo, bool treatDribbleAsWalk = false);
 

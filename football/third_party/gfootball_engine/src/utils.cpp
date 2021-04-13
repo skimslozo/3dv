@@ -94,6 +94,76 @@ Vector3 GetProjectedCoord(const Vector3 &pos3D,
   return result;
 }
 
+// Construct the transformation matrix from the world to camera coordinates
+Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
+  DO_VALIDATION;
+  Matrix3 rotMat;
+  Matrix4 resMat;
+  Vector3 camPos = camera->GetDerivedPosition();
+  // printf("campos: %4.2f, %4.2f, %4.2f \n", camPos.coords[0], camPos.coords[1], camPos.coords[2]);
+  Quaternion WorldToCameraRot = camera->GetDerivedRotation();
+  WorldToCameraRot.Normalize();
+  Quaternion CameraToWorldRot = WorldToCameraRot.GetInverse();
+  // printf("camrot: %4.2f, %4.2f, %4.2f, %4.2f\n", WorldToCameraRot.elements[0], WorldToCameraRot.elements[1], WorldToCameraRot.elements[2], WorldToCameraRot.elements[3]);
+  CameraToWorldRot.Normalize();
+  CameraToWorldRot.ConstructMatrix(rotMat); 
+  Vector3 r_cw = rotMat*(-camPos);
+  resMat = rotMat;
+  resMat.elements[3] = r_cw.coords[0];
+  resMat.elements[7] = r_cw.coords[1];
+  resMat.elements[11] = r_cw.coords[2];
+  return resMat;
+} 
+
+Matrix3 GetIntrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
+  float fov = camera->GetFOV();
+  Vector3 contextSize3D = GetGraphicsSystem()->GetContextSize();
+  float alpha = (contextSize3D.coords[0])/(2*tan((pi/180) * (fov))); // Focal length in pixels. Not dividing by 2 as I am 95% sure they multiply it by 2 when rendering (so it's already defined as a half)
+  float u0 = contextSize3D.coords[0]/2;
+  float v0 = contextSize3D.coords[1]/2;
+  Matrix3 K;
+  K.elements[0] = alpha;
+  K.elements[1] = 0;
+  K.elements[2] = u0;
+  K.elements[3] = 0;
+  K.elements[4] = alpha;
+  K.elements[5] = v0;
+  K.elements[6] = 0;
+  K.elements[7] = 0;
+  K.elements[8] = 1;
+  return K;
+}
+
+Vector3 GetPixelCoordinates(const Vector3 &pos3D, boost::intrusive_ptr<Camera> camera) { 
+  Matrix4 RT = GetExtrinsicsMatrix(camera);
+  Matrix4 K;
+  K = GetIntrinsicsMatrix(camera);
+  K.elements[3] = 0;
+  K.elements[7] = 0;
+  K.elements[11] = 0;
+  K.elements[12] = 0;
+  K.elements[13] = 0;
+  K.elements[14] = 0;
+  K.elements[15] = 0;
+  float xc, yc, zc, wc, xp, yp, zp, w;
+  RT.MultiplyVec4(pos3D.coords[0], pos3D.coords[1], pos3D.coords[2], 1, xc, yc, zc, wc);
+  K.MultiplyVec4(xc, yc, zc, 0, xp, yp, zp, w);
+  int out1 = static_cast<int>(floor(xp/zp)); 
+  int out2 = static_cast<int>(floor(yp/zp));
+  // if (out1 < 0){
+  //   out1 = 0;
+  // } else if (out1 > 2 * K.elements[2]){
+  //   out1 = 2 * K.elements[2];
+  // }
+  // if (out2 < 0){
+  //   out2 = 0;
+  // } else if (out2 > 2 * K.elements[5]){
+  //   out2 = 2 * K.elements[5];
+  // }
+  Vector3 out(out1, out2, 0);
+  return out;
+}
+
 int GetVelocityID(e_Velocity velo, bool treatDribbleAsWalk) {
   DO_VALIDATION;
   int id = 0;
