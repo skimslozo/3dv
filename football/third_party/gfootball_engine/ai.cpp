@@ -27,118 +27,179 @@ using namespace boost::interprocess;
 using std::string;
 
 class GameEnv_Python : public GameEnv {
- public:
+  public:
 
-void set_camera_fov_py(float fov) {
-    ContextHolder c(this);
-    setCameraFOV(fov);
-  }
+    void set_camera_fov_py(float fov, int cam) {
+      ContextHolder c(this);
+      setCameraFOV(fov, cam);
+    }
 
-   void set_camera_node_position_py(float x, float y, float z) {
-    ContextHolder c(this);
-    Vector3 tmp(x,y,z);
-    setCameraNodePosition(tmp);
-  }
-     void set_camera_node_orientation_py(float x, float y, float z, float w) {
-    ContextHolder c(this);
-    Quaternion tmp(x,y,z, w);
-    setCameraNodeOrientation(tmp);
-  }
+    void set_camera_node_position_py(float x, float y, float z, int cam) {
+      ContextHolder c(this);
+      Vector3 tmp(x,y,z);
+      setCameraNodePosition(tmp, cam);
+    }
+    
+    void set_camera_node_orientation_py(float x, float y, float z, float w, int cam) {
+      ContextHolder c(this);
+      Quaternion tmp(x,y,z, w);
+      setCameraNodeOrientation(tmp, cam);
+    }
 
-  void set_camera_orientation_py(float x, float y, float z, float w) {
-    ContextHolder c(this);
-    Quaternion tmp(x,y,z, w);
-    setCameraOrientation(tmp);
-  }
-
-
-  PyObject* get_frame_python() {
-    ContextHolder c(this);
-    screenshoot screen = get_frame();
-    PyObject* str = PyBytes_FromStringAndSize(screen.data(), screen.size());
-    return str;
-  }
-
-    float get_camera_fov_py() {
-      float tmp = getCameraFOV();
-    return tmp;
-  }
+    void set_camera_orientation_py(float x, float y, float z, float w, int cam) {
+      ContextHolder c(this);
+      Quaternion tmp(x,y,z,w);
+      setCameraOrientation(tmp, cam);
+    }
 
 
-  bp::list get_camera_node_position_py() {
-    ContextHolder c(this);
-    Vector3 tmp = getCameraNodePosition();
-    bp::list l;
-    l.append(tmp.coords[0]);
-    l.append(tmp.coords[1]);
-    l.append(tmp.coords[2]);
+    PyObject* get_frame_python() {
+      ContextHolder c(this);
+      screenshoot screen = get_frame();
+      PyObject* str = PyBytes_FromStringAndSize(screen.data(), screen.size());
+      return str;
+    }
 
-    return l;
-  }
-
-
-  bp::list get_camera_orientation_py() {
-    ContextHolder c(this);
-    Quaternion tmp = getCameraOrientation();
-    bp::list l;
-    l.append(tmp.elements[0]);
-    l.append(tmp.elements[1]);
-    l.append(tmp.elements[2]);
-    l.append(tmp.elements[3]);
-    return l;
-  }
+    float get_camera_fov_py(int cam) {
+        float tmp = getCameraFOV(cam);
+      return tmp;
+    }
 
 
-    bp::list get_camera_node_orientation_py() {
-    ContextHolder c(this);
-    Quaternion tmp = getCameraNodeOrientation();
-    bp::list l;
-    l.append(tmp.elements[0]);
-    l.append(tmp.elements[1]);
-    l.append(tmp.elements[2]);
-    l.append(tmp.elements[3]);
-    return l;
-  }
+    bp::list get_camera_node_position_py(int cam) {
+      ContextHolder c(this);
+      Vector3 tmp = getCameraNodePosition(cam);
+      bp::list l;
+      l.append(tmp.coords[0]);
+      l.append(tmp.coords[1]);
+      l.append(tmp.coords[2]);
 
+      return l;
+    }
 
-  PyObject* get_state_python(const std::string& to_pickle) {
-    std::string state = get_state(to_pickle);
-    PyObject* str = PyBytes_FromStringAndSize(state.data(), state.size());
-    return str;
-  }
+    bp::list get_camera_orientation_py(int cam) {
+      ContextHolder c(this);
+      Quaternion tmp = getCameraOrientation(cam);
+      bp::list l;
+      l.append(tmp.elements[0]);
+      l.append(tmp.elements[1]);
+      l.append(tmp.elements[2]);
+      l.append(tmp.elements[3]);
+      return l;
+    }
 
-  PyObject* set_state_python(const std::string& state) {
-    std::string from_pickle = set_state(state);
-    PyObject* str = PyBytes_FromStringAndSize(from_pickle.data(), from_pickle.size());
-    return str;
-  }
+    bp::list get_3d_ball_position() {
+      ContextHolder c(this);
+      Vector3 tmp = Get3DBallPosition();
+      bp::list l;
+      l.append(tmp.coords[0]);
+      l.append(tmp.coords[1]);
+      l.append(tmp.coords[2]);
+      return l;
+    }
 
-  void step_python() {
-    ContextHolder c(this);
-    PyThreadState* _save = NULL;
-    Py_UNBLOCK_THREADS;
-    step();
-    Py_BLOCK_THREADS;
-  }
+    bp::list get_2d_ball_position() {
+      ContextHolder c(this);
+      Vector3 tmp = Get2DBallPosition();
+      bp::list l;
+      l.append(tmp.coords[0]);
+      l.append(tmp.coords[1]);
+      return l;
+    }
 
-  void render_python(bool swap_buffer) {
-    ContextHolder c(this);
-    PyThreadState* _save = NULL;
-    Py_UNBLOCK_THREADS;
-    render(swap_buffer);
-    Py_BLOCK_THREADS;
-  }
+    bp::list get_camera_node_orientation_py(int cam) {
+      ContextHolder c(this);
+      Quaternion tmp = getCameraNodeOrientation(cam);
+      bp::list l;
+      l.append(tmp.elements[0]);
+      l.append(tmp.elements[1]);
+      l.append(tmp.elements[2]);
+      l.append(tmp.elements[3]);
+      return l;
+    }
 
-  void reset_python(ScenarioConfig& game_config, bool init_animation) {
-    ContextHolder c(this);
-    context->step = -1;
-    PyThreadState* _save = NULL;
-    Py_UNBLOCK_THREADS;
-    GetTracker()->setDisabled(true);
-    reset(game_config, init_animation);
-    GetTracker()->setDisabled(false);
-    Py_BLOCK_THREADS;
-  }
+    bp::list get_extrinsics_matrix(int cam) {
+      ContextHolder c(this);
+      Matrix4 res = GetRT(cam);
+      bp::list l;
+      l.append(res.elements[0]);
+      l.append(res.elements[1]);
+      l.append(res.elements[2]);
+      l.append(res.elements[3]);
+      l.append(res.elements[4]);
+      l.append(res.elements[5]);
+      l.append(res.elements[6]);
+      l.append(res.elements[7]);
+      l.append(res.elements[8]);
+      l.append(res.elements[9]);
+      l.append(res.elements[10]);
+      l.append(res.elements[11]);
+      return l;
+    }
+
+    bp::list get_intrinsics_matrix(int cam) { 
+      ContextHolder c(this);
+      Matrix3 res = GetK(cam);
+      bp::list l; 
+      l.append(res.elements[0]);
+      l.append(res.elements[1]);
+      l.append(res.elements[2]);
+      l.append(res.elements[3]);
+      l.append(res.elements[4]);
+      l.append(res.elements[5]);
+      l.append(res.elements[6]);
+      l.append(res.elements[7]);
+      l.append(res.elements[8]);
+      return l;
+    }
+
+    bp::list get_pixel_coordinates(int cam) { 
+      ContextHolder c(this);
+      bp::list res;
+      Vector3 c2d = GetPixCoord(cam);
+      res.append(c2d.coords[0]);
+      res.append(c2d.coords[1]);
+      return res;
+    }
+
+    PyObject* get_state_python(const std::string& to_pickle) {
+      std::string state = get_state(to_pickle);
+      PyObject* str = PyBytes_FromStringAndSize(state.data(), state.size());
+      return str;
+    }
+
+    PyObject* set_state_python(const std::string& state) {
+      std::string from_pickle = set_state(state);
+      PyObject* str = PyBytes_FromStringAndSize(from_pickle.data(), from_pickle.size());
+      return str;
+    }
+
+    void step_python() {
+      ContextHolder c(this);
+      PyThreadState* _save = NULL;
+      Py_UNBLOCK_THREADS;
+      step();
+      Py_BLOCK_THREADS;
+    }
+
+    void render_python(bool swap_buffer) {
+      ContextHolder c(this);
+      PyThreadState* _save = NULL;
+      Py_UNBLOCK_THREADS;
+      render(swap_buffer);
+      Py_BLOCK_THREADS;
+    }
+
+    void reset_python(ScenarioConfig& game_config, bool init_animation) {
+      ContextHolder c(this);
+      context->step = -1;
+      PyThreadState* _save = NULL;
+      Py_UNBLOCK_THREADS;
+      GetTracker()->setDisabled(true);
+      reset(game_config, init_animation);
+      GetTracker()->setDisabled(false);
+      Py_BLOCK_THREADS;
+    }
 };
 
 BOOST_PYTHON_MODULE(_gameplayfootball) {
@@ -219,6 +280,11 @@ BOOST_PYTHON_MODULE(_gameplayfootball) {
       .def("set_camera_orientation", &GameEnv_Python::set_camera_orientation_py)
       .def("set_camera_node_orientation", &GameEnv_Python::set_camera_node_orientation_py)
       .def("set_camera_fov", &GameEnv_Python::set_camera_fov_py)
+      .def("get_3d_ball_position", &GameEnv_Python::get_3d_ball_position)
+      .def("get_2d_ball_position", &GameEnv_Python::get_2d_ball_position)
+      .def("get_extrinsics_matrix", &GameEnv_Python::get_extrinsics_matrix)
+      .def("get_intrinsics_matrix", &GameEnv_Python::get_intrinsics_matrix)
+      .def("get_pixel_coordinates", &GameEnv_Python::get_pixel_coordinates)
       .def("get_camera_fov", &GameEnv_Python::get_camera_fov_py);
 
   class_<Vector3>("Vector3", init<float, float, float>())

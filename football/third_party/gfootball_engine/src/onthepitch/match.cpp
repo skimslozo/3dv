@@ -156,6 +156,16 @@ Match::Match(MatchData *matchData, const std::vector<AIControlledKeyboard *> &co
   cameraNode->SetPosition(Vector3(40, 0, 100));
   GetDynamicNode()->AddNode(cameraNode);
 
+  camera2 = new Camera("camera2");
+  GetScene3D()->CreateSystemObjects(camera2);
+  camera2->Init();
+
+  camera2->SetFOV(100);
+  cameraNode2 = boost::intrusive_ptr<Node>(new Node("cameraNode2"));
+  cameraNode2->AddObject(camera2);
+  cameraNode2->SetPosition(Vector3(40, 0, 100));
+  GetDynamicNode()->AddNode(cameraNode2);
+
   autoUpdateIngameCamera = true;
 
 
@@ -577,9 +587,9 @@ void Match::UpdateIngameCamera() {
 
       float distRot = average.coords[1] / 800.0f;
 
-      //cameraOrientation.SetAngleAxis(distRot + (0.42f - height * 0.01f) * pi, Vector3(1, 0, 0));
-      //cameraNodeOrientation.SetAngleAxis((-average.coords[0] / pitchHalfW) * (1.0f - angleFac) * 0.25f * pi * 1.24f, Vector3(0, 0, 1));
-      /*cameraNodePosition =
+      cameraOrientation.SetAngleAxis(distRot + (0.42f - height * 0.01f) * pi, Vector3(1, 0, 0));
+      cameraNodeOrientation.SetAngleAxis((-average.coords[0] / pitchHalfW) * (1.0f - angleFac) * 0.25f * pi * 1.24f, Vector3(0, 0, 1));
+      cameraNodePosition =
           average * Vector3(1.0f * (1.0f - _default_CameraAngleFactor * 0.2f) *
                                 (1.0f - _default_CameraZoom * 0.3f),
                             0.9f - _default_CameraZoom * 0.3f, 0.2f) +
@@ -587,7 +597,7 @@ void Match::UpdateIngameCamera() {
               0,
               -41.4f - (_default_CameraFOV * 3.7f) + std::pow(height, 1.2f) * 0.46f,
               10.0f + height) *
-              zoom; */
+              zoom;
 
 
       cameraFOV = (fov * 28.0f) - (cameraNodePosition.coords[1] / 30.0f);
@@ -1083,12 +1093,36 @@ void Match::Put() {
   teams[second_team]->Put(!reverse);
   officials->Put(reverse);
 
-  camera->SetPosition(Vector3(0, 0, 0), false);
-  camera->SetRotation(cameraOrientation, false);
-  cameraNode->SetPosition(cameraNodePosition, false);
-  cameraNode->SetRotation(cameraNodeOrientation, false);
-  camera->SetFOV(cameraFOV);
-  camera->SetCapping(cameraNearCap, cameraFarCap);
+  if (!custom_cam) {
+    camera->SetPosition(Vector3(0, 0, 0), false);
+    camera->SetRotation(cameraOrientation, false);
+    cameraNode->SetPosition(cameraNodePosition, false);
+    cameraNode->SetRotation(cameraNodeOrientation, false);
+    camera->SetFOV(cameraFOV);
+    camera->SetCapping(cameraNearCap, cameraFarCap);
+
+    camera2->SetPosition(Vector3(0, 0, 0), false);
+    camera2->SetRotation(cameraOrientation, false);
+    cameraNode2->SetPosition(cameraNodePosition, false);
+    cameraNode2->SetRotation(cameraNodeOrientation, false);
+    camera2->SetFOV(cameraFOV);
+    camera2->SetCapping(cameraNearCap, cameraFarCap);
+
+  } else {
+    camera->SetPosition(Vector3(0, 0, 0), false);
+    camera->SetRotation(camera->custom_orientation, false);
+    cameraNode->SetPosition(cameraNode->custom_position, false);
+    cameraNode->SetRotation(cameraNode->custom_orientation, false);
+    camera->SetFOV(camera->custom_fov);
+    camera->SetCapping(cameraNearCap, cameraFarCap);
+
+    camera2->SetPosition(Vector3(0, 0, 0), false);
+    camera2->SetRotation(camera->custom_orientation, false);
+    cameraNode2->SetPosition(cameraNode2->custom_position, false);
+    cameraNode2->SetRotation(cameraNode2->custom_orientation, false);
+    camera2->SetFOV(camera2->custom_fov);
+    camera2->SetCapping(cameraNearCap, cameraFarCap);
+  }
 
   GetDynamicNode()->RecursiveUpdateSpatialData(e_SpatialDataType_Both);
   DO_VALIDATION;

@@ -93,6 +93,10 @@ namespace blunted {
 
       virtual AABB GetAABB() const;
 
+      Vector3 custom_position;
+      Quaternion custom_orientation;
+      Vector3 custom_scale;
+      
     protected:
       std::string name;
 
@@ -101,6 +105,7 @@ namespace blunted {
       Vector3 position;
       Quaternion rotation;
       Vector3 scale;
+
 
       // cache
       mutable bool _dirty_DerivedPosition = false;
