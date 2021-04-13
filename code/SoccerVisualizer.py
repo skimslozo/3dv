@@ -30,7 +30,7 @@ class SoccerVisualizer():
         visuals.XYZAxis(parent=self.view.scene)
         
         '''
-        Ball Visualizer (for now with a marker)
+        Ball Visualizer (for now with a marker, I think for sphere I will need a loop to display multiple)
         '''
         self.ball_vis = visuals.Markers()
         self.view.add(self.ball_vis)
