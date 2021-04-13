@@ -162,6 +162,8 @@ class Match {
     float cameraFOV = 0.0f;
     boost::intrusive_ptr<Node> cameraNode;
     boost::intrusive_ptr<Camera> camera;
+      boost::intrusive_ptr<Node> cameraNode2;
+    boost::intrusive_ptr<Camera> camera2;
     boost::intrusive_ptr<Node> sunNode;
     bool custom_cam = false;
 

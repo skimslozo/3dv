@@ -156,6 +156,16 @@ Match::Match(MatchData *matchData, const std::vector<AIControlledKeyboard *> &co
   cameraNode->SetPosition(Vector3(40, 0, 100));
   GetDynamicNode()->AddNode(cameraNode);
 
+  camera2 = new Camera("camera2");
+  GetScene3D()->CreateSystemObjects(camera2);
+  camera2->Init();
+
+  camera2->SetFOV(100);
+  cameraNode2 = boost::intrusive_ptr<Node>(new Node("cameraNode2"));
+  cameraNode2->AddObject(camera2);
+  cameraNode2->SetPosition(Vector3(40, 0, 100));
+  GetDynamicNode()->AddNode(cameraNode2);
+
   autoUpdateIngameCamera = true;
 
 
@@ -1090,6 +1100,14 @@ void Match::Put() {
     cameraNode->SetRotation(cameraNodeOrientation, false);
     camera->SetFOV(cameraFOV);
     camera->SetCapping(cameraNearCap, cameraFarCap);
+
+    camera2->SetPosition(Vector3(0, 0, 0), false);
+    camera2->SetRotation(cameraOrientation, false);
+    cameraNode2->SetPosition(cameraNodePosition, false);
+    cameraNode2->SetRotation(cameraNodeOrientation, false);
+    camera2->SetFOV(cameraFOV);
+    camera2->SetCapping(cameraNearCap, cameraFarCap);
+
   } else {
     camera->SetPosition(Vector3(0, 0, 0), false);
     camera->SetRotation(camera->custom_orientation, false);
@@ -1097,6 +1115,13 @@ void Match::Put() {
     cameraNode->SetRotation(cameraNode->custom_orientation, false);
     camera->SetFOV(camera->custom_fov);
     camera->SetCapping(cameraNearCap, cameraFarCap);
+
+    camera2->SetPosition(Vector3(0, 0, 0), false);
+    camera2->SetRotation(camera->custom_orientation, false);
+    cameraNode2->SetPosition(cameraNode2->custom_position, false);
+    cameraNode2->SetRotation(cameraNode2->custom_orientation, false);
+    camera2->SetFOV(camera2->custom_fov);
+    camera2->SetCapping(cameraNearCap, cameraFarCap);
   }
 
   GetDynamicNode()->RecursiveUpdateSpatialData(e_SpatialDataType_Both);

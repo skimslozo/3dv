@@ -46,21 +46,21 @@ struct GameEnv {
   PyObject* get_frame();
 
   // Get the current rendered frame.
-  bp::list get_camera_node_orientation();
-  bp::list get_camera_orientation();
-  bp::list get_camera_node_position();
+  bp::list get_camera_node_orientation(int cam);
+  bp::list get_camera_orientation(int cam);
+  bp::list get_camera_node_position(int cam);
   bp::list get_3d_ball_position();
   bp::list get_2d_ball_position();
-  Matrix4 get_extrinsics_matrix();
-  Matrix3 get_intrinsics_matrix();
-  bp::list get_pixel_coordinates();
+  Matrix4 get_extrinsics_matrix(int cam);
+  Matrix3 get_intrinsics_matrix(int cam);
+  bp::list get_pixel_coordinates(int cam);
 
-  float get_camera_fov();
+  float get_camera_fov(int cam);
 
-  void set_camera_node_orientation(float x, float x, float z, float w);
-  void set_camera_orientation(float x, float x, float z, float w);
-  void set_camera_node_position(float x, float y, float z);
-  void set_camera_fov(float fov);
+  void set_camera_node_orientation(float x, float x, float z, float w, int cam);
+  void set_camera_orientation(float x, float x, float z, float w, int cam);
+  void set_camera_node_position(float x, float y, float z, int cam);
+  void set_camera_fov(float fov, int cam);
 
   // Executes the action inside the game.
   void action(int action, bool left_team, int player);
