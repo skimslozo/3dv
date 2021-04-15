@@ -95,7 +95,7 @@ def main(_):
   data_manager = DataManager()
 
   try:
-    for time in range(100):
+    for time in range(10):
       r = R.from_euler('xyz', camrot, degrees = True)
       carot_quat = r.as_quat()
 

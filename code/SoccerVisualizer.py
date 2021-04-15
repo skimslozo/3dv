@@ -5,7 +5,7 @@ Visualize the trajectory or points
 
 import vispy
 from vispy.scene import visuals, SceneCanvas
-vispy.use('pyqt5')
+
 import numpy as np
 import cv2
 
@@ -48,7 +48,7 @@ class SoccerVisualizer():
         football_field.transform = center_trans
 
     def draw_ball(self, positions):
-        '''
+        """
         Todo: project dot onto field, connect for trajectory
         Parameters
         ----------
@@ -57,7 +57,7 @@ class SoccerVisualizer():
         Returns
         -------
         None.
-        '''
+        """
         self.ball_vis.set_data(positions, size = 10, face_color = 'red', edge_color = 'red')
         
 
