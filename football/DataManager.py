@@ -91,8 +91,14 @@ class DataManager:
             self.constants = pickle.load(f)
         return self.constants
 
+    def get_points_2d(self, cam_num):
+        return np.array([d['pix_ball_pos_cam%d' % cam_num] for d in self.data]).reshape(-1, 2)
 
+    def get_ext_mat(self, cam_num):
+        return np.array([d['extrinsic_mat_cam%d' % cam_num] for d in self.data])
 
+    def get_points_3d(self):
+        return np.array([d['3d_ball_pos'] for d in self.data]).reshape(-1, 3)
 
 
 

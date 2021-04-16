@@ -39,6 +39,7 @@ class SoccerVisualizer():
         center_trans = vispy.visuals.transforms.MatrixTransform()
         center_trans.translate((-field_size[0]/2, -field_size[1]/2, 0))
         center_trans.scale(scale=(105/field_size[1], 68/field_size[0], 1))
+        center_trans.rotate(90,(0,0,1))
         football_field.transform = center_trans
 
     def draw_ball_marker(self, positions, color, size_marker):
