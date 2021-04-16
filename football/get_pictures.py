@@ -147,14 +147,21 @@ def main(_):
       data_manager.set_fov(fov)
       data_manager.set_intrinsic_mat(K0)
       data_manager.set_3d_ball_pos(time=time, pos=ball3d)
-      data_manager.set_cam(time=time, cam_node_pos=camPos0, cam_node_orientation=CNO0, pix_ball_pos=pixcoord0,
+      data_manager.set_cam(time=time,
+                           extrinsic_mat=RT0,
+                           cam_node_pos=camPos0,
+                           cam_node_orientation=CNO0,
+                           pix_ball_pos=pixcoord0,
                            cam_orientation=camOr0, cam=0)
-      data_manager.set_extrinsic_mat(time=time, mat=RT0, cam=0)
-      data_manager.set_extrinsic_mat(time=time, mat=RT1, cam=1)
-      data_manager.set_cam(time=time, cam_node_pos=camPos1, cam_node_orientation=CNO1, pix_ball_pos=pixcoord1,
-                           cam_orientation=camOr1, cam=1)
-
-      data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=RUN_NAME)
+      data_manager.set_cam(time=time,
+                           extrinsic_mat=RT1,
+                           cam_node_pos=camPos1,
+                           cam_node_orientation=CNO1,
+                           pix_ball_pos=pixcoord1,
+                           cam_orientation=camOr1,
+                           cam=1)
+      if SAVE_FRAMES:
+        data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=RUN_NAME)
 
       time += 1
 
