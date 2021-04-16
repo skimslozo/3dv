@@ -4,6 +4,10 @@ from EstimationMetrics import EstimationMetrics
 from football.DataManager import DataManager
 from triangulatepoints import triangulatePoints_twoviews
 import vispy
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).absolute().parent.parent / 'football'))
+
 
 datamanager = DataManager()
 data = datamanager.load_data('run1_data.p')
