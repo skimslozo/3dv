@@ -128,32 +128,31 @@ class TestDataManager(TestCase):
         np.testing.assert_array_equal(self.data_manager.data[0]['pix_ball_pos_cam0'], self.mat_2)
 
 
-    def test_write_data_to_json(self):
-        self.data_manager.write_data_to_json('test_data.json')
+    def test_write_data(self):
+        self.data_manager.write_data('test_data.p')
 
-        file = Path(Path.cwd().parent / 'football_data/test_data.json')
+        file = Path(Path.cwd().parent / 'football_data/test_data.p')
         self.assertTrue(file.is_file())
 
-    def test_write_constants_to_json(self):
-        self.data_manager.write_constants_to_json('test_constants.json')
-
-        file = Path(Path.cwd().parent / 'football_data/test_constants.json')
+    def test_write_constants(self):
+        self.data_manager.write_constants('test_constants.p')
+        file = Path(Path.cwd().parent / 'football_data/test_constants.p')
         self.assertTrue(file.is_file())
 
-    def test_load_data_from_json(self):
-        df_org = self.data_manager.write_data_to_json('test_data.json')
+    def test_load_data(self):
+        self.data_manager.write_data('test_data.p')
         data_manager2 = DataManager()
-        df_new = data_manager2.load_data_from_json('test_data.json')
-        # pd.testing.assert_frame_equal(df_new, df_org, check_dtype=False)
+        data_manager2.load_data('test_data.p')
         self.assertTrue(len(data_manager2.data) == len(self.data_manager.data))
+        for x, y in zip(data_manager2.data, self.data_manager.data):
+            self.assertTrue(x.keys() == y.keys())
 
-    def test_load_constants_from_json(self):
-        df_org = self.data_manager.write_constants_to_json('test_constants.json')
+
+    def test_load_constants(self):
+        self.data_manager.write_constants('test_constants.p')
         data_manager2 = DataManager()
-        df_new = data_manager2.load_constants_from_json('test_constants.json')
-        # pd.testing.assert_frame_equal(df_new, df_org, check_dtype=False)
-        self.assertTrue(len(data_manager2.constants) == len(self.data_manager.constants))
-
+        data_manager2.load_constants('test_constants.p')
+        self.assertTrue(data_manager2.constants.keys() == self.data_manager.constants.keys())
 
 
 if __name__ == '__main__':

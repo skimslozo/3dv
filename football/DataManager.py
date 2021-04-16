@@ -1,14 +1,13 @@
-import os
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
+import pickle
 
 class DataManager:
 
     def __init__(self):
         self.constants = {} # dict
-        self.data = [{}] # list of dicts
+        self.data = [{}]# list of dicts
         self.frames = [{}]
 
     def set_extrinsic_mat(self, time: int, mat: np.ndarray, cam=0):
@@ -61,30 +60,38 @@ class DataManager:
         self.set_cam_orientation(time, cam_orientation, cam)
         self.set_pix_ball_pos(time, pix_ball_pos, cam)
 
-    def write_data_to_json(self, filename):
-        Path(Path.cwd().parent / 'football_data').mkdir(parents=True, exist_ok=True)
-        df = pd.DataFrame(self.data)
-        df.index.rename('time', inplace=True)
-        df.to_json(Path.cwd().parent / 'football_data/' / filename, index=True)
-        return df
+    # def write_data(self, filename):
+    #     Path(Path.cwd().parent / 'football_data').mkdir(parents=True, exist_ok=True)
+    #     df = pd.DataFrame(self.data)
+    #     df.index.rename('time', inplace=True)
+    #     df.to_json(Path.cwd().parent / 'football_data/' / filename, index=True)
+    #     return df
 
-    def write_constants_to_json(self, filename):
-        Path(Path.cwd().parent / 'football_data').mkdir(parents=True, exist_ok=True)
-        df = pd.DataFrame([self.constants])
-        df.to_json(Path.cwd().parent / 'football_data' / filename, index=True)
-        return df
+    def write_data(self, filename):
+        path =Path.cwd().parent / 'football_data' / filename
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, 'wb') as f:
+            pickle.dump(self.data, f)
 
-    def load_data_from_json(self, filename):
+    def write_constants(self, filename):
         path = Path.cwd().parent / 'football_data' / filename
-        df = pd.read_json(path)
-        self.data = df.T.to_dict()
-        return df
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, 'wb') as f:
+            pickle.dump(self.constants, f)
 
-    def load_constants_from_json(self, filename):
+    def load_data(self, filename):
         path = Path.cwd().parent / 'football_data' / filename
-        df = pd.read_json(path)
-        self.constants = df.loc[0].to_dict()
-        return df
+        with open(path, 'rb') as f:
+            self.data = pickle.load(f)
+        return self.data
+
+    def load_constants(self, filename):
+        path = Path.cwd().parent / 'football_data' / filename
+        with open(path, 'rb') as f:
+            self.constants = pickle.load(f)
+        return self.constants
+
+
 
 
 

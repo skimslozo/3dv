@@ -157,8 +157,8 @@ def main(_):
         env.reset()
 
     # end for
-    data_manager.write_data_to_json('run1_data.json')
-    data_manager.write_constants_to_json('run1_constants.json')
+    data_manager.write_data('run1_data.p')
+    data_manager.write_constants('run1_constants.p')
 
   except KeyboardInterrupt:
     logging.warning('Game stopped, writing dump...')
