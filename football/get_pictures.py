@@ -48,6 +48,10 @@ from scipy.spatial.transform import Rotation as R
 
 from football.DataManager import DataManager
 
+# Settings for saving data
+RUN_NAME = 'run1'
+SAVE_FRAMES = False
+
 FLAGS = flags.FLAGS
 
 flags.DEFINE_string('players', 'keyboard:left_players=1',
@@ -95,7 +99,7 @@ def main(_):
   data_manager = DataManager()
 
   try:
-    for time in range(500):
+    for time in range(100):
       r = R.from_euler('xyz', camrot, degrees = True)
       carot_quat = r.as_quat()
 
@@ -147,9 +151,10 @@ def main(_):
                            cam_orientation=camOr0, cam=0)
       data_manager.set_extrinsic_mat(time=time, mat=RT0, cam=0)
       data_manager.set_extrinsic_mat(time=time, mat=RT1, cam=1)
-      data_manager.set_cam(time=time, cam_node_pos=camPos1, cam_node_orientation=CNO0, pix_ball_pos=pixcoord1,
+      data_manager.set_cam(time=time, cam_node_pos=camPos1, cam_node_orientation=CNO1, pix_ball_pos=pixcoord1,
                            cam_orientation=camOr1, cam=1)
 
+      data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=RUN_NAME)
 
       time += 1
 
@@ -157,8 +162,8 @@ def main(_):
         env.reset()
 
     # end for
-    data_manager.write_data('run1_data.p')
-    data_manager.write_constants('run1_constants.p')
+    data_manager.write_data(RUN_NAME + '_data.p')
+    data_manager.write_constants(RUN_NAME + '_constants.p')
 
   except KeyboardInterrupt:
     logging.warning('Game stopped, writing dump...')

@@ -2,19 +2,20 @@ from pathlib import Path
 
 import numpy as np
 import pickle
+from PIL import Image
 
 class DataManager:
 
     def __init__(self):
         self.constants = {} # dict
         self.data = [{}]# list of dicts
-        self.frames = [{}]
+        self.frames = {} # dict of lists
 
     def set_extrinsic_mat(self, time: int, mat: np.ndarray, cam=0):
         if mat.shape != (3, 4) and mat.shape != (4, 4):
             raise ValueError('Wrong Dimension. Extrinsic matrix has dimension 3x4')
         self._check_time(time)
-        self.data[time]['extrinsic_mat_cam' + str(cam)] = mat
+        self.data[time]['cam' +str(cam) + '_extrinsic_mat'] = mat
 
     def set_intrinsic_mat(self, mat: np.ndarray):
         if mat.shape != (3, 3) and mat.shape!= (3, 4):
@@ -36,7 +37,7 @@ class DataManager:
 
     def set_pix_ball_pos(self, time, pos, cam=0):
         self._check_time(time)
-        self.data[time]['pix_ball_pos_cam' + str(cam)] = pos
+        self.data[time]['cam' + str(cam) + '_pix_ball_pos'] = pos
 
     def set_cam_node_orientation(self, time, orientation, cam=0):
         self._check_time(time)
@@ -51,21 +52,22 @@ class DataManager:
         self.data[time]['cam' + str(cam) + '_orientation'] = orientation
 
     def set_frame(self, time, frame, cam):
-        self._check_time(time)
-        self.frames[time]['cam'+ str(cam)] = frame
+        key = 'cam' + str(cam)
+        if not key in self.frames.keys():
+            self.frames[key] = [frame]
+        elif len(self.frames[key]) == time:
+            self.frames[key].append(frame)
+        elif len(self.frames[key]) > time:
+            self.frames[key][time] = frame
+        else:
+            raise IndexError('Parameter time out of bounds. Please populate in order.')
 
-    def set_cam(self, time, cam_node_pos, cam_node_orientation, cam_orientation, pix_ball_pos, cam):
+    def set_cam(self, time, extrinsic_mat, cam_node_pos, cam_node_orientation, cam_orientation, pix_ball_pos, cam):
+        self.set_extrinsic_mat(time, extrinsic_mat, cam)
         self.set_cam_node_pos(time, cam_node_pos, cam)
         self.set_cam_node_orientation(time, cam_node_orientation, cam)
         self.set_cam_orientation(time, cam_orientation, cam)
         self.set_pix_ball_pos(time, pix_ball_pos, cam)
-
-    # def write_data(self, filename):
-    #     Path(Path.cwd().parent / 'football_data').mkdir(parents=True, exist_ok=True)
-    #     df = pd.DataFrame(self.data)
-    #     df.index.rename('time', inplace=True)
-    #     df.to_json(Path.cwd().parent / 'football_data/' / filename, index=True)
-    #     return df
 
     def write_data(self, filename):
         path =Path.cwd().parent / 'football_data' / filename
@@ -79,6 +81,25 @@ class DataManager:
         with open(path, 'wb') as f:
             pickle.dump(self.constants, f)
 
+    def write_frames(self, dirname):
+        path = Path.cwd().parent / 'football_data' / dirname
+        path.mkdir(parents=True, exist_ok=True)
+        for key in self.frames.keys():
+            for i, frame in enumerate(self.frames[key]):
+                file = key + '_' + str(i).zfill(5) + '.png'
+                img = Image.fromarray(frame.astype('uint8'))
+                img.save(str(path/file), format='png')
+                img.close()
+
+    def write_frame(self, time, frame, cam, dirname):
+        path = Path.cwd().parent / 'football_data' / dirname
+        path.mkdir(parents=True, exist_ok=True)
+        file = 'cam' + str(cam) + '_' + str(time).zfill(5) + '.png'
+        img = Image.fromarray(frame.astype('uint8'))
+        img.save(str(path/file), format='png')
+        img.close()
+
+
     def load_data(self, filename):
         path = Path.cwd().parent / 'football_data' / filename
         with open(path, 'rb') as f:
@@ -90,6 +111,12 @@ class DataManager:
         with open(path, 'rb') as f:
             self.constants = pickle.load(f)
         return self.constants
+
+    def load_frame(self, time, dirname, cam):
+        path = Path.cwd().parent / 'football_data' / dirname
+        file = 'cam' + str(cam) + '_' + str(time).zfill(5) + '.png'
+        with Image.open(str(path / file)) as img:
+            return np.array(img)
 
     def get_points_2d(self, cam_num):
         return np.array([d['pix_ball_pos_cam%d' % cam_num] for d in self.data]).reshape(-1, 2)
