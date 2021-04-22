@@ -109,7 +109,7 @@ ENV/
 env.bak/
 venv.bak/
 .vscode
-
+tmp.code-workspace
 
 # Spyder project settings
 .spyderproject
