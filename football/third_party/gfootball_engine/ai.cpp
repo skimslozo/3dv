@@ -29,27 +29,27 @@ using std::string;
 class GameEnv_Python : public GameEnv {
   public:
 
-    void set_camera_fov_py(float fov, int cam) {
+    void set_camera_fov_py(float fov) {
       ContextHolder c(this);
-      setCameraFOV(fov, cam);
+      setCameraFOV(fov);
     }
 
-    void set_camera_node_position_py(float x, float y, float z, int cam) {
+    void set_camera_node_position_py(float x, float y, float z) {
       ContextHolder c(this);
       Vector3 tmp(x,y,z);
-      setCameraNodePosition(tmp, cam);
+      setCameraNodePosition(tmp);
     }
     
-    void set_camera_node_orientation_py(float x, float y, float z, float w, int cam) {
+    void set_camera_node_orientation_py(float x, float y, float z, float w) {
       ContextHolder c(this);
       Quaternion tmp(x,y,z, w);
-      setCameraNodeOrientation(tmp, cam);
+      setCameraNodeOrientation(tmp);
     }
 
-    void set_camera_orientation_py(float x, float y, float z, float w, int cam) {
+    void set_camera_orientation_py(float x, float y, float z, float w) {
       ContextHolder c(this);
       Quaternion tmp(x,y,z,w);
-      setCameraOrientation(tmp, cam);
+      setCameraOrientation(tmp);
     }
 
 
@@ -60,15 +60,15 @@ class GameEnv_Python : public GameEnv {
       return str;
     }
 
-    float get_camera_fov_py(int cam) {
-        float tmp = getCameraFOV(cam);
+    float get_camera_fov_py() {
+        float tmp = getCameraFOV();
       return tmp;
     }
 
 
-    bp::list get_camera_node_position_py(int cam) {
+    bp::list get_camera_node_position_py() {
       ContextHolder c(this);
-      Vector3 tmp = getCameraNodePosition(cam);
+      Vector3 tmp = getCameraNodePosition();
       bp::list l;
       l.append(tmp.coords[0]);
       l.append(tmp.coords[1]);
@@ -77,9 +77,9 @@ class GameEnv_Python : public GameEnv {
       return l;
     }
 
-    bp::list get_camera_orientation_py(int cam) {
+    bp::list get_camera_orientation_py() {
       ContextHolder c(this);
-      Quaternion tmp = getCameraOrientation(cam);
+      Quaternion tmp = getCameraOrientation();
       bp::list l;
       l.append(tmp.elements[0]);
       l.append(tmp.elements[1]);
@@ -107,9 +107,9 @@ class GameEnv_Python : public GameEnv {
       return l;
     }
 
-    bp::list get_camera_node_orientation_py(int cam) {
+    bp::list get_camera_node_orientation_py() {
       ContextHolder c(this);
-      Quaternion tmp = getCameraNodeOrientation(cam);
+      Quaternion tmp = getCameraNodeOrientation();
       bp::list l;
       l.append(tmp.elements[0]);
       l.append(tmp.elements[1]);
@@ -118,9 +118,9 @@ class GameEnv_Python : public GameEnv {
       return l;
     }
 
-    bp::list get_extrinsics_matrix(int cam) {
+    bp::list get_extrinsics_matrix() {
       ContextHolder c(this);
-      Matrix4 res = GetRT(cam);
+      Matrix4 res = GetRT();
       bp::list l;
       l.append(res.elements[0]);
       l.append(res.elements[1]);
@@ -137,9 +137,9 @@ class GameEnv_Python : public GameEnv {
       return l;
     }
 
-    bp::list get_intrinsics_matrix(int cam) { 
+    bp::list get_intrinsics_matrix() { 
       ContextHolder c(this);
-      Matrix3 res = GetK(cam);
+      Matrix3 res = GetK();
       bp::list l; 
       l.append(res.elements[0]);
       l.append(res.elements[1]);
@@ -153,10 +153,10 @@ class GameEnv_Python : public GameEnv {
       return l;
     }
 
-    bp::list get_pixel_coordinates(int cam) { 
+    bp::list get_pixel_coordinates() { 
       ContextHolder c(this);
       bp::list res;
-      Vector3 c2d = GetPixCoord(cam);
+      Vector3 c2d = GetPixCoord();
       res.append(c2d.coords[0]);
       res.append(c2d.coords[1]);
       return res;

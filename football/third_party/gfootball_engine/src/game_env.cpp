@@ -128,79 +128,43 @@ SharedInfo GameEnv::get_info() {
   return info;
 }
 
-Vector3 GameEnv::getCameraNodePosition(int cam) {
-  if (cam == 1){
-    Vector3 tmp = GetGameTask()->GetMatch()->cameraNode->GetPosition();
-    return tmp;
-  } else {
-    Vector3 tmp = GetGameTask()->GetMatch()->cameraNode2->GetPosition();
-    return tmp;
-  }
+Vector3 GameEnv::getCameraNodePosition() {
+  Vector3 tmp = GetGameTask()->GetMatch()->cameraNode->GetPosition();
+  return tmp;
 }
 
-Quaternion GameEnv::getCameraOrientation(int cam) {
-  if (cam == 1){
-    Quaternion tmp = GetGameTask()->GetMatch()->camera->GetRotation();
-    return tmp; 
-  } else {
-    Quaternion tmp = GetGameTask()->GetMatch()->camera2->GetRotation();
-    return tmp;
-  }
+Quaternion GameEnv::getCameraOrientation() {
+  Quaternion tmp = GetGameTask()->GetMatch()->camera->GetRotation();
+  return tmp;
 }
 
-Quaternion GameEnv::getCameraNodeOrientation(int cam) {
-  if (cam == 1) { 
-    Quaternion tmp = GetGameTask()->GetMatch()->cameraNode->GetRotation();
-    return tmp;
-  } else {
-    Quaternion tmp = GetGameTask()->GetMatch()->cameraNode2->GetRotation();
-    return tmp;
-  }
+Quaternion GameEnv::getCameraNodeOrientation() {
+  Quaternion tmp = GetGameTask()->GetMatch()->cameraNode->GetRotation();
+  return tmp;
 }
 
-float GameEnv::getCameraFOV(int cam) {
-  if (cam == 1){
-    float tmp = GetGameTask()->GetMatch()->camera->GetFOV();
-    return tmp;
-  } else {
-    float tmp = GetGameTask()->GetMatch()->camera2->GetFOV();
-    return tmp;
-  }
+float GameEnv::getCameraFOV() {
+  float tmp = GetGameTask()->GetMatch()->camera->GetFOV();
+  return tmp;
 }
 
-void GameEnv::setCameraFOV(float tmp, int cam) {
-  if (cam == 1) {
-    GetGameTask()->GetMatch()->camera->custom_fov = tmp;
-  } else {
-    GetGameTask()->GetMatch()->camera2->custom_fov = tmp;
-  }
-    GetGameTask()->GetMatch()->custom_cam = true;
-}
-
-void GameEnv::setCameraNodePosition(Vector3 tmp, int cam) {
-  if (cam == 1){
-    GetGameTask()->GetMatch()->cameraNode->custom_position = tmp;
-  } else {
-    GetGameTask()->GetMatch()->cameraNode2->custom_position = tmp;
-  }
+void GameEnv::setCameraFOV(float tmp) {
+  GetGameTask()->GetMatch()->camera->custom_fov = tmp;
   GetGameTask()->GetMatch()->custom_cam = true;
 }
 
-void GameEnv::setCameraOrientation(Quaternion tmp, int cam) {
-  if (cam == 1){
-    GetGameTask()->GetMatch()->camera->custom_orientation  = tmp;
-  } else {
-    GetGameTask()->GetMatch()->camera2->custom_orientation  = tmp;
-  }
-    GetGameTask()->GetMatch()->custom_cam = true; 
+void GameEnv::setCameraNodePosition(Vector3 tmp) {
+  GetGameTask()->GetMatch()->cameraNode->custom_position = tmp;
+  GetGameTask()->GetMatch()->custom_cam = true;
 }
 
-void GameEnv::setCameraNodeOrientation(Quaternion tmp, int cam) {
-  if (cam == 1) {
-    GetGameTask()->GetMatch()->cameraNode->custom_orientation = tmp;
-  } else {
-    GetGameTask()->GetMatch()->cameraNode2->custom_orientation = tmp;
-  }
+void GameEnv::setCameraOrientation(Quaternion tmp) {
+  GetGameTask()->GetMatch()->camera->custom_orientation  = tmp;
+  GetGameTask()->GetMatch()->custom_cam = true; 
+}
+
+void GameEnv::setCameraNodeOrientation(Quaternion tmp) {
+  GetGameTask()->GetMatch()->cameraNode->custom_orientation = tmp;
   GetGameTask()->GetMatch()->custom_cam = true;
 }
 
@@ -214,34 +178,19 @@ Vector3 GameEnv::Get2DBallPosition() {
   return ball2dpos;
 }
 
-Matrix4 GameEnv::GetRT(int cam) {
-  if (cam == 1){
-   Matrix4 RT = GetExtrinsicsMatrix(GetGameTask()->GetMatch()->camera);
-   return RT;
-  } else {
-   Matrix4 RT = GetExtrinsicsMatrix(GetGameTask()->GetMatch()->camera2);
-   return RT;
-  }
+Matrix4 GameEnv::GetRT() {
+  Matrix4 RT = GetExtrinsicsMatrix(GetGameTask()->GetMatch()->camera);
+  return RT;
 }
 
-Matrix3 GameEnv::GetK(int cam) { 
-  if (cam == 1) {
-    Matrix3 K = GetIntrinsicsMatrix(GetGameTask()->GetMatch()->camera);
-    return K;
-  } else {
-    Matrix3 K = GetIntrinsicsMatrix(GetGameTask()->GetMatch()->camera2);
-    return K;
-  }
+Matrix3 GameEnv::GetK() { 
+  Matrix3 K = GetIntrinsicsMatrix(GetGameTask()->GetMatch()->camera);
+  return K;
 }
 
-Vector3 GameEnv::GetPixCoord(int cam) { 
-  if (cam == 1) {
-    Vector3 PixCoord = GetPixelCoordinates(Get3DBallPosition(), GetGameTask()->GetMatch()->camera);
-    return PixCoord;
-  } else {
-    Vector3 PixCoord = GetPixelCoordinates(Get3DBallPosition(), GetGameTask()->GetMatch()->camera2);
-    return PixCoord;
-  }
+Vector3 GameEnv::GetPixCoord() { 
+  Vector3 PixCoord = GetPixelCoordinates(Get3DBallPosition(), GetGameTask()->GetMatch()->camera);
+  return PixCoord;
 }
 
 screenshoot GameEnv::get_frame() {
