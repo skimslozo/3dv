@@ -109,6 +109,9 @@ Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
   CameraToWorldRot.ConstructMatrix(rotMat); 
   Vector3 r_cw = rotMat*(-camPos);
   resMat = rotMat;
+  resMat.elements[2] *= -1;
+  resMat.elements[6] *= -1;
+  resMat.elements[10] *= -1;
   resMat.elements[3] = r_cw.coords[0];
   resMat.elements[7] = r_cw.coords[1];
   resMat.elements[11] = r_cw.coords[2];
@@ -118,19 +121,20 @@ Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
 Matrix3 GetIntrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
   float fov = camera->GetFOV();
   Vector3 contextSize3D = GetGraphicsSystem()->GetContextSize();
-  float alpha = (contextSize3D.coords[0])/(2*tan((pi/180) * (fov))); // Focal length in pixels. Not dividing by 2 as I am 95% sure they multiply it by 2 when rendering (so it's already defined as a half)
+  float nearCap, farCap;
+  float alpha = (contextSize3D.coords[1])/(2*tan((pi/180) * (fov/2))); // Focal length in pixels. FOV IS DEFINED AS THE VERTICAL FIELD OF VIEW!!!!111!!
   float u0 = contextSize3D.coords[0]/2;
   float v0 = contextSize3D.coords[1]/2;
   Matrix3 K;
   K.elements[0] = alpha;
   K.elements[1] = 0;
-  K.elements[2] = u0;
+  K.elements[2] = -u0;
   K.elements[3] = 0;
-  K.elements[4] = alpha;
-  K.elements[5] = v0;
+  K.elements[4] = -alpha; // Flipping y axis format
+  K.elements[5] = -v0;
   K.elements[6] = 0;
   K.elements[7] = 0;
-  K.elements[8] = 1;
+  K.elements[8] = -1; // Objects always haved negative z axis
   return K;
 }
 
@@ -150,16 +154,16 @@ Vector3 GetPixelCoordinates(const Vector3 &pos3D, boost::intrusive_ptr<Camera> c
   K.MultiplyVec4(xc, yc, zc, 0, xp, yp, zp, w);
   int out1 = static_cast<int>(floor(xp/zp)); 
   int out2 = static_cast<int>(floor(yp/zp));
-  // if (out1 < 0){
-  //   out1 = 0;
-  // } else if (out1 > 2 * K.elements[2]){
-  //   out1 = 2 * K.elements[2];
-  // }
-  // if (out2 < 0){
-  //   out2 = 0;
-  // } else if (out2 > 2 * K.elements[5]){
-  //   out2 = 2 * K.elements[5];
-  // }
+  if (out1 < 0){
+    out1 = 0;
+  } else if (out1 > 2 * abs(K.elements[2])){
+    out1 = 2 * abs(K.elements[2]);
+  }
+  if (out2 < 0){
+    out2 = 0;
+  } else if (out2 > 2 * abs(K.elements[5])){
+    out2 = 2 * abs(K.elements[5]);
+  }
   Vector3 out(out1, out2, 0);
   return out;
 }

@@ -46,7 +46,7 @@ from gfootball.env import football_env
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
-from football.DataManager import DataManager
+from DataManager import DataManager
 
 # Settings for saving data
 RUN_NAME = 'run1'
@@ -93,55 +93,39 @@ def main(_):
   if FLAGS.render:
     env.render()
   env.reset()
-
-  camrot = np.array([60, 0, 0]) # handy to set the camera coordinates in Euler angles
-
   data_manager = DataManager()
 
+  camrot = np.array([0, 0, 0]) # handy to set the camera coordinates in Euler angles
+  pos = 0
   try:
     for time in range(100):
       r = R.from_euler('xyz', camrot, degrees = True)
       carot_quat = r.as_quat()
-
-      # The second camera is hard-coded, so it does not scale to multiple cameras yet. Additionally, if you only use one camera with custom positions,
-      # The second once won't really work. Point being - if you use both cameras, explicitly define all custom parameters for both cameras.
-      
-      env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0, 1)
-      env._env._env.set_camera_node_position(-40, -140, 70, 1)
-      env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3], 1)
-      env._env._env.set_camera_fov(24, 1)
-
-      env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0, 2)
-      env._env._env.set_camera_node_position(40, -140, 70, 2)
-      env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3], 2)
-      env._env._env.set_camera_fov(24, 2)
+      pos += 0.1
+      env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
+      env._env._env.set_camera_node_position(0, 0, 80)
+      env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3])
+      env._env._env.set_camera_fov(24)
 
       _, _, done, _ = env.step([])     
 
-      RT0 = procOut(env._env._env.get_extrinsics_matrix(1), [3, 4])
-      RT1 = procOut(env._env._env.get_extrinsics_matrix(2), [3, 4])
-      K0 = procOut(env._env._env.get_intrinsics_matrix(1), [3, 3])
-      K1 = procOut(env._env._env.get_intrinsics_matrix(2), [3, 3])
+      RT0 = procOut(env._env._env.get_extrinsics_matrix(), [3, 4])
+      K0 = procOut(env._env._env.get_intrinsics_matrix(), [3, 3])
       ball3d = procOut(env._env._env.get_3d_ball_position(), [3, 1])
       ball3dh = np.transpose(np.matrix(np.append(np.array(ball3d), 1)))
-      camPos0 = procOut(env._env._env.get_camera_node_position(1), [3, 1])
-      camPos1 = procOut(env._env._env.get_camera_node_position(2), [3, 1])
-      camOr0 = procOut(env._env._env.get_camera_orientation(1), [1, 4])
-      camOr1 = procOut(env._env._env.get_camera_orientation(2), [1, 4])
-      fov = env._env._env.get_camera_fov(1)
-      pixcoord0 = procOut(env._env._env.get_pixel_coordinates(1), [2, 1])
-      pixcoord1 = procOut(env._env._env.get_pixel_coordinates(2), [2, 1])
-      CNO0 = env._env._env.get_camera_node_orientation(1)
-      CNO1 = env._env._env.get_camera_node_orientation(2)
+      camPos0 = procOut(env._env._env.get_camera_node_position(), [3, 1])
+      camOr0 = procOut(env._env._env.get_camera_orientation(), [1, 4])
+      CNO0 = procOut(env._env._env.get_camera_node_orientation(), [1, 4])
+      fov = env._env._env.get_camera_fov()
+      pixcoord0 = procOut(env._env._env.get_pixel_coordinates(), [2, 1])
 
-      # print("CNO: ", env._env._env.get_camera_node_orientation(1))
-      # print("CNP1: ", env._env._env.get_camera_node_position(1))
-      # print("CNP2: ", env._env._env.get_camera_node_position(2))
-      # print("CO: ", env._env._env.get_camera_orientation(1))
-      # print("CFOV: ", env._env._env.get_camera_fov(1))
+
+      # print("CNO: ", env._env._env.get_camera_node_orientation())
+      # print("CNP1: ", env._env._env.get_camera_node_position())
+      # print("CO: ", env._env._env.get_camera_orientation())
+      # print("CFOV: ", env._env._env.get_camera_fov())
       # print('RT', RT)
-      # print("PIX2D 1: ", env._env._env.get_pixel_coordinates(1))
-      # print("PIX2D 2: ", env._env._env.get_pixel_coordinates(2))
+      print("PIX2D 1: ", env._env._env.get_pixel_coordinates())
       # print('Ball 3D: ', ball3d)
       # print('----------------------------')
       data_manager.set_fov(fov)
@@ -153,13 +137,6 @@ def main(_):
                            cam_node_orientation=CNO0,
                            pix_ball_pos=pixcoord0,
                            cam_orientation=camOr0, cam=0)
-      data_manager.set_cam(time=time,
-                           extrinsic_mat=RT1,
-                           cam_node_pos=camPos1,
-                           cam_node_orientation=CNO1,
-                           pix_ball_pos=pixcoord1,
-                           cam_orientation=camOr1,
-                           cam=1)
       if SAVE_FRAMES:
         data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=RUN_NAME)
 
