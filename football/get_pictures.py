@@ -89,12 +89,13 @@ def main(_):
     env.render()
   env.reset()
 
-  camrot = np.array([0, 0, 0]) # handy to set the camera coordinates in Euler angles
+  camrot = np.array([0, 0, 90]) # handy to set the camera coordinates in Euler angles
+  pos = 0
   try:
     while True:
       r = R.from_euler('xyz', camrot, degrees = True)
       carot_quat = r.as_quat()
-
+      pos += 0.1
       env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
       env._env._env.set_camera_node_position(0, 0, 80)
       env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3])
