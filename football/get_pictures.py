@@ -93,8 +93,9 @@ def main(_):
   if FLAGS.render:
     env.render()
   env.reset()
+  data_manager = DataManager()
 
-  camrot = np.array([0, 0, 90]) # handy to set the camera coordinates in Euler angles
+  camrot = np.array([0, 0, 0]) # handy to set the camera coordinates in Euler angles
   pos = 0
   try:
     for time in range(100):
@@ -114,18 +115,17 @@ def main(_):
       ball3dh = np.transpose(np.matrix(np.append(np.array(ball3d), 1)))
       camPos0 = procOut(env._env._env.get_camera_node_position(), [3, 1])
       camOr0 = procOut(env._env._env.get_camera_orientation(), [1, 4])
+      CNO0 = procOut(env._env._env.get_camera_node_orientation(), [1, 4])
       fov = env._env._env.get_camera_fov()
       pixcoord0 = procOut(env._env._env.get_pixel_coordinates(), [2, 1])
 
 
-      # print("CNO: ", env._env._env.get_camera_node_orientation(1))
-      # print("CNP1: ", env._env._env.get_camera_node_position(1))
-      # print("CNP2: ", env._env._env.get_camera_node_position(2))
-      # print("CO: ", env._env._env.get_camera_orientation(1))
-      # print("CFOV: ", env._env._env.get_camera_fov(1))
+      # print("CNO: ", env._env._env.get_camera_node_orientation())
+      # print("CNP1: ", env._env._env.get_camera_node_position())
+      # print("CO: ", env._env._env.get_camera_orientation())
+      # print("CFOV: ", env._env._env.get_camera_fov())
       # print('RT', RT)
-      # print("PIX2D 1: ", env._env._env.get_pixel_coordinates(1))
-      # print("PIX2D 2: ", env._env._env.get_pixel_coordinates(2))
+      print("PIX2D 1: ", env._env._env.get_pixel_coordinates())
       # print('Ball 3D: ', ball3d)
       # print('----------------------------')
       data_manager.set_fov(fov)
@@ -137,13 +137,6 @@ def main(_):
                            cam_node_orientation=CNO0,
                            pix_ball_pos=pixcoord0,
                            cam_orientation=camOr0, cam=0)
-      data_manager.set_cam(time=time,
-                           extrinsic_mat=RT1,
-                           cam_node_pos=camPos1,
-                           cam_node_orientation=CNO1,
-                           pix_ball_pos=pixcoord1,
-                           cam_orientation=camOr1,
-                           cam=1)
       if SAVE_FRAMES:
         data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=RUN_NAME)
 
