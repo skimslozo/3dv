@@ -122,7 +122,7 @@ def generate_camera(run_name, cam_nr=0, steps=100, cam_pos=np.array([0, 0, 80]),
                                  pix_ball_pos=pixcoord0,
                                  cam_orientation=camOr0, cam=0)
             if save_frames:
-                data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=run_name)
+                data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=cam_nr, dirname=run_name)
 
             time += 1
 
