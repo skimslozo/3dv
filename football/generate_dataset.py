@@ -25,7 +25,7 @@ from scipy.spatial.transform import Rotation as R
 
 from DataManager import DataManager
 
-def generate_dataset(run_name, cam_positions, cam_rotations, render=True, save_frames=False):
+def generate_dataset(run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False):
     """
     Automatically generate a data set for one game with multiple camera views
 
@@ -44,7 +44,7 @@ def generate_dataset(run_name, cam_positions, cam_rotations, render=True, save_f
     N = cam_positions.shape[0]
     for i in range(N):
         generate_camera(run_name=run_name, cam_pos=cam_positions[i,:], cam_rot=cam_rotations[i,:], cam_nr= i,
-                        render=render, save_frames=save_frames)
+                        render=render, save_frames=save_frames, steps=steps)
 
 def procOut(cout, size):
     """Method for post-processing the lists output from the wrapper to numpy matrices
