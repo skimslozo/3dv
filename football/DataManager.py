@@ -69,14 +69,14 @@ class DataManager:
         self.set_cam_orientation(time, cam_orientation, cam)
         self.set_pix_ball_pos(time, pix_ball_pos, cam)
 
-    def write_data(self, filename):
-        path =Path.cwd().parent / 'football_data' / filename
+    def write_data(self, run_name, filename):
+        path =Path.cwd().parent / 'football_data' / run_name / filename
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, 'wb') as f:
             pickle.dump(self.data, f)
 
-    def write_constants(self, filename):
-        path = Path.cwd().parent / 'football_data' / filename
+    def write_constants(self, run_name, filename):
+        path = Path.cwd().parent / 'football_data' / run_name / filename
         path.parent.mkdir(parents=True, exist_ok=True)
         with open(path, 'wb') as f:
             pickle.dump(self.constants, f)
@@ -100,14 +100,14 @@ class DataManager:
         img.close()
 
 
-    def load_data(self, filename):
-        path = Path.cwd().parent / 'football_data' / filename
+    def load_data(self, run_name, filename):
+        path = Path.cwd().parent / 'football_data' / run_name / filename
         with open(path, 'rb') as f:
             self.data = pickle.load(f)
         return self.data
 
-    def load_constants(self, filename):
-        path = Path.cwd().parent / 'football_data' / filename
+    def load_constants(self, run_name, filename):
+        path = Path.cwd().parent / 'football_data' / run_name / filename
         with open(path, 'rb') as f:
             self.constants = pickle.load(f)
         return self.constants
