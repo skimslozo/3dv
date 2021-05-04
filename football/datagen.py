@@ -8,5 +8,5 @@ camera_rotations = np.array([[60, 0, 0],
                              [60, 0, 0],
                              [60, 0, 0]])
 dg = DatasetGenerator.DatasetGenerator()
-dg.generate_dataset('test_run2', camera_positions, camera_rotations)
+dg.generate_dataset('test_run', camera_positions, camera_rotations)
 

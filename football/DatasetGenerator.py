@@ -28,7 +28,7 @@ from DataManager import DataManager
 
 class DatasetGenerator():
     def __init__(self):
-        self.data_manager = DataManager()
+        pass
 
     def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False):
         """
@@ -79,9 +79,11 @@ class DatasetGenerator():
             'dump_full_episodes': True,
             'players': players,
             'real_time': True,
+            'game_engine_random_seed': 42,
+            'level' : level,
         })
-        if level:
-            cfg['level'] = level
+        #if level:
+        #    cfg['level'] = level
         env = football_env.FootballEnv(cfg)
         print('hi')
         if render:
@@ -136,6 +138,8 @@ class DatasetGenerator():
 
                 if done:
                     env.reset()
+
+
 
             # end for
 
