@@ -3,6 +3,8 @@ from pathlib import Path
 import numpy as np
 import pickle
 from PIL import Image
+import cv2
+import os
 
 class DataManager:
 
@@ -82,7 +84,7 @@ class DataManager:
             pickle.dump(self.constants, f)
 
     def write_frames(self, dirname):
-        path = Path.cwd().parent / 'football_data' / dirname
+        path = Path.cwd().parent / 'football_data' / dirname / 'frames'
         path.mkdir(parents=True, exist_ok=True)
         for key in self.frames.keys():
             for i, frame in enumerate(self.frames[key]):
@@ -92,7 +94,8 @@ class DataManager:
                 img.close()
 
     def write_frame(self, time, frame, cam, dirname):
-        path = Path.cwd().parent / 'football_data' / dirname
+        cam_dir = 'cam_' + str(cam)
+        path = Path.cwd().parent / 'football_data' / dirname / 'frames' / cam_dir
         path.mkdir(parents=True, exist_ok=True)
         file = 'cam' + str(cam) + '_' + str(time).zfill(5) + '.png'
         img = Image.fromarray(frame.astype('uint8'))
@@ -113,10 +116,30 @@ class DataManager:
         return self.constants
 
     def load_frame(self, time, dirname, cam):
-        path = Path.cwd().parent / 'football_data' / dirname
+        cam_dir = 'cam_' + str(cam)
+        path = Path.cwd().parent / 'football_data' / dirname / 'frames' / cam_dir
         file = 'cam' + str(cam) + '_' + str(time).zfill(5) + '.png'
         with Image.open(str(path / file)) as img:
             return np.array(img)
+
+    def write_video(self, dirname, cam):
+        cam_dir = 'cam_' + str(cam)
+        path = Path.cwd().parent / 'football_data' / dirname / 'frames' / cam_dir
+        dir_list = sorted(os.listdir(path))
+        images = [img for img in dir_list if img.endswith(".png")]
+        frame = cv2.imread(os.path.join(path, images[0]))
+        height, width, layers = frame.shape
+        video_name = 'cam_' + str(cam) + '_video.mp4'
+        video_path = Path.cwd().parent / 'football_data' / dirname / 'frames' / video_name
+        fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
+        video = cv2.VideoWriter(str(video_path), fourcc , 24, (width, height))
+
+        for image in images:
+            os_path = os.path.join(path, image)
+            video.write(cv2.imread(os.path.join(path, image)))
+
+        cv2.destroyAllWindows()
+        video.release()
 
     def get_points_2d(self, cam_num):
         return np.array([d['cam' + str(cam_num) + '_pix_ball_pos'] for d in self.data]).reshape(-1, 2)

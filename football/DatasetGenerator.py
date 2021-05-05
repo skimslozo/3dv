@@ -30,7 +30,7 @@ class DatasetGenerator():
     def __init__(self):
         pass
 
-    def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False):
+    def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False, write_video=False):
         """
         Automatically generate a data set for one game with multiple camera views
 
@@ -42,19 +42,25 @@ class DatasetGenerator():
         render : if true the pygame window will appear and render the game (slower)
         save_frames : if true the frames of the game will be saved
         steps : amount of steps the simulation should make
+        write_video : if true a video will be made from the frames, should only be true when save_frames is true
 
         Returns
         -------
         None.
         """
+        if write_video:
+            save_frames = True
         self.data_manager = DataManager()
         N = cam_positions.shape[0]
         for i in range(N):
             self.generate_camera(run_name=run_name, cam_pos=cam_positions[i, :], cam_rot=cam_rotations[i, :], cam_nr=i,
-                                 render=render, save_frames=save_frames, steps=steps)
+                                 render=render, save_frames=save_frames, steps=steps, write_video=write_video)
 
         self.data_manager.write_data(run_name, run_name + '_data.p')
         self.data_manager.write_constants(run_name, run_name + '_constants.p')
+        if write_video:
+            for cam in range(N):
+                self.data_manager.write_video(run_name, cam)
 
     def procOut(self, cout, size):
         """Method for post-processing the lists output from the wrapper to numpy matrices
@@ -69,7 +75,7 @@ class DatasetGenerator():
         return np.matrix(np.reshape(np.array(cout), size))
 
     def generate_camera(self, run_name, cam_nr=0, steps=100, cam_pos=np.array([0, 0, 80]), cam_rot=np.array([0, 0, 0]),
-                        level='tests.11_vs_11_deterministic', render=True, save_frames=False):
+                        level='tests.11_vs_11_deterministic', render=True, save_frames=False, write_video=False):
         players = ''
 
         assert not (any(['agent' in player for player in players])
