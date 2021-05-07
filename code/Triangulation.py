@@ -1,8 +1,12 @@
+"""
+Script to run the various triangulations and vispy visualizations
+"""
 import numpy as np
 from SoccerVisualizer import SoccerVisualizer
 from EstimationMetrics import EstimationMetrics
 from football.DataManager import DataManager
-from triangulatepoints import triangulatePoints_twoviews
+from triangulatepoints import triangulate_points_two_views as tri_tv
+from triangulatepoints import triangulate_points_nonlinear_refinement as tri_nlr
 import vispy
 import sys
 from pathlib import Path
@@ -10,29 +14,31 @@ sys.path.append(str(Path(__file__).absolute().parent.parent / 'football'))
 
 
 datamanager = DataManager()
-#datamanager2 = DataManager()
-data = datamanager.load_data('test_run', 'test_run_data.p')
-constants = datamanager.load_constants('test_run', 'test_run_constants.p')
-#data2 = datamanager2.load_data('test_run2', 'test_run2_data.p')
-#constants2 = datamanager2.load_constants('test_run2', 'test_run2_constants.p')
 
-k_0 = np.array(constants['intrinsic_mat'])
-points_2d_0 = datamanager.get_points_2d(0)
-points_2d_1 = datamanager.get_points_2d(2)
-ext_mat_0 = datamanager.get_ext_mat(0)
-ext_mat_1 = datamanager.get_ext_mat(2)
+data, constants = datamanager.load('test_run')
+proj_mat_all = datamanager.get_proj_mat_all()
+points_2d_all = datamanager.get_points_2d_all()
+
+amount_cam = constants['amount_of_cams']
+
 gt_points_3d = datamanager.get_points_3d()
-#gt_points_3d2 = datamanager2.get_points_3d()
-proj_mat_0 = k_0 @ ext_mat_0
-proj_mat_1 = k_0 @ ext_mat_1
 
-points_3d = triangulatePoints_twoviews(proj_mat_0, proj_mat_1, points_2d_0, points_2d_1)
+points_3d_tv = tri_tv(proj_mat_all[0], proj_mat_all[2], points_2d_all[0], points_2d_all[2])
+points_3d_nlr = tri_nlr(proj_mat_all, points_2d_all)
 
-estimator = EstimationMetrics(gt_points_3d, points_3d)
-print('The error of each estimated point: \n', estimator.euclidean_distance())
-print('The largest error is: \n', estimator.largest_difference())
+estimator_tv = EstimationMetrics(gt_points_3d, points_3d_tv)
+estimator_nlr = EstimationMetrics(gt_points_3d, points_3d_nlr)
+
+# print('The error of each estimated point: \n', estimator_tv.euclidean_distance())
+print('The largest error for two views is: \n', estimator_tv.largest_difference())
+print('The sum of errors for two views is: \n', estimator_tv.euclidean_distance_sum())
+print('The largest error for {} views using Nonlinear Refinement is: \n'.format(amount_cam),
+      estimator_nlr.largest_difference())
+print('The sum of errors for {} views using Nonlinear Refinement is: \n'.format(amount_cam),
+      estimator_nlr.euclidean_distance_sum())
 
 visualizer = SoccerVisualizer()
-visualizer.draw_ball_marker(points_3d, size_marker=7, color='red')
+visualizer.draw_ball_marker(points_3d_tv, size_marker=7, color='blue')
+visualizer.draw_ball_marker(points_3d_nlr, size_marker=7, color='red')
 visualizer.draw_ball_marker(gt_points_3d, size_marker=7, color='lawngreen')
 vispy.app.run()

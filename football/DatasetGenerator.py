@@ -56,21 +56,23 @@ class DatasetGenerator():
             self.generate_camera(run_name=run_name, cam_pos=cam_positions[i, :], cam_rot=cam_rotations[i, :], cam_nr=i,
                                  render=render, save_frames=save_frames, steps=steps, write_video=write_video)
 
-        self.data_manager.write_data(run_name, run_name + '_data.p')
-        self.data_manager.write_constants(run_name, run_name + '_constants.p')
+        self.data_manager.write_data(run_name)
+        self.data_manager.write_constants(run_name)
         if write_video:
             for cam in range(N):
                 self.data_manager.write_video(run_name, cam)
 
     def procOut(self, cout, size):
-        """Method for post-processing the lists output from the wrapper to numpy matrices
+        """
+        Method for post-processing the lists output from the wrapper to numpy matrices
 
         Input:
           -cout: list (output from the wrapper) to-be processed, n x m
           -size [a, b]: a list- or tuple-like indiciating the desired shape of the output. a*b = n*m
 
         Output:
-          - a x b np.matrix with reordered elements of cout in the desired format"""
+          - a x b np.matrix with reordered elements of cout in the desired format
+        """
         size = (size[0], size[1])
         return np.matrix(np.reshape(np.array(cout), size))
 
@@ -138,7 +140,7 @@ class DatasetGenerator():
                                           pix_ball_pos=pixcoord0,
                                           cam_orientation=camOr0, cam=cam_nr)
                 if save_frames:
-                    self.data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=cam_nr, dirname=run_name)
+                    self.data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=cam_nr, run_name=run_name)
 
                 time += 1
 
