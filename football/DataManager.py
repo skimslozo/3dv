@@ -91,21 +91,21 @@ class DataManager:
 
     def write_frames(self, dirname):
         path = Path.cwd().parent / 'football_data' / dirname / 'frames'
-        path.mkdir(parents=True, exist_ok=True)
+        path.mkdirs(parents=True, exist_ok=True)
         for key in self.frames.keys():
             for i, frame in enumerate(self.frames[key]):
-                file = key + '_' + str(i).zfill(5) + '.png'
+                _file = key + '_' + str(i).zfill(5) + '.png'
                 img = Image.fromarray(frame.astype('uint8'))
-                img.save(str(path / file), format='png')
+                img.save(str(path / _file), format='png')
                 img.close()
 
     def write_frame(self, time, frame, cam, run_name):
         cam_dir = 'cam_' + str(cam)
         path = Path.cwd().parent / 'football_data' / run_name / 'frames' / cam_dir
         path.mkdir(parents=True, exist_ok=True)
-        file = 'cam' + str(cam) + '_' + str(time).zfill(5) + '.png'
+        _file = 'cam' + str(cam) + '_' + str(time).zfill(5) + '.png'
         img = Image.fromarray(frame.astype('uint8'))
-        img.save(str(path / file), format='png')
+        img.save(str(path / _file), format='png')
         img.close()
 
     def load_data(self, run_name):

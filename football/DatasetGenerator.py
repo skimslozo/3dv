@@ -23,6 +23,8 @@ from gfootball.env import football_env
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 
+from PIL import Image, ImageDraw
+
 from DataManager import DataManager
 
 
@@ -30,7 +32,8 @@ class DatasetGenerator():
     def __init__(self):
         pass
 
-    def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False, write_video=False):
+    def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False, 
+                        write_video=False, use_red_dot=False):
         """
         Automatically generate a data set for one game with multiple camera views
 
@@ -43,7 +46,7 @@ class DatasetGenerator():
         save_frames : if true the frames of the game will be saved
         steps : amount of steps the simulation should make
         write_video : if true a video will be made from the frames, should only be true when save_frames is true
-
+        -use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
         Returns
         -------
         None.
@@ -54,7 +57,7 @@ class DatasetGenerator():
         N = cam_positions.shape[0]
         for i in range(N):
             self.generate_camera(run_name=run_name, cam_pos=cam_positions[i, :], cam_rot=cam_rotations[i, :], cam_nr=i,
-                                 render=render, save_frames=save_frames, steps=steps, write_video=write_video)
+                                 render=render, save_frames=save_frames, steps=steps, write_video=write_video, use_red_dot=use_red_dot)
 
         self.data_manager.write_data(run_name)
         self.data_manager.write_constants(run_name)
@@ -69,7 +72,7 @@ class DatasetGenerator():
         Input:
           -cout: list (output from the wrapper) to-be processed, n x m
           -size [a, b]: a list- or tuple-like indiciating the desired shape of the output. a*b = n*m
-
+          -use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
         Output:
           - a x b np.matrix with reordered elements of cout in the desired format
         """
@@ -77,7 +80,7 @@ class DatasetGenerator():
         return np.matrix(np.reshape(np.array(cout), size))
 
     def generate_camera(self, run_name, cam_nr=0, steps=100, cam_pos=np.array([0, 0, 80]), cam_rot=np.array([0, 0, 0]),
-                        level='tests.11_vs_11_deterministic', render=True, save_frames=False, write_video=False):
+                        level='tests.11_vs_11_deterministic', render=True, save_frames=False, write_video=False, use_red_dot=False):
         players = ''
 
         assert not (any(['agent' in player for player in players])
@@ -140,7 +143,19 @@ class DatasetGenerator():
                                           pix_ball_pos=pixcoord0,
                                           cam_orientation=camOr0, cam=cam_nr)
                 if save_frames:
-                    self.data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=cam_nr, run_name=run_name)
+                    _frame = env.observation()['frame']
+                    if use_red_dot:
+                        img = Image.fromarray(_frame.astype('uint8'))
+                        draw = ImageDraw.Draw(img)
+                        r = 5
+                        x = pixcoord0[0]
+                        y = pixcoord0[1]
+                        leftUpPoint = (x-r, y-r)
+                        rightDownPoint = (x+r, y+r)
+                        twoPointList = [leftUpPoint, rightDownPoint]
+                        draw.ellipse(twoPointList, fill=(255,0,0,255))
+                        _frame = np.array(img)
+                    self.data_manager.write_frame(time=time, frame=_frame, cam=cam_nr, run_name=run_name)
 
                 time += 1
 
