@@ -16,5 +16,5 @@ camera_rotations = np.array([[50,0, 0],
                              [60, 0, 160],
                              [60, 0, 180]])
 dg = DatasetGenerator.DatasetGenerator()
-dg.generate_dataset('test', camera_positions, camera_rotations, steps=2000, save_frames=True, write_video=True, use_red_dot=False)
+dg.generate_dataset('test', camera_positions, camera_rotations, steps=100, save_frames=True, write_video=True, use_red_dot=True)
 

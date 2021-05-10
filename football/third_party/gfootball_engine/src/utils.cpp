@@ -109,9 +109,6 @@ Matrix4 GetExtrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
   CameraToWorldRot.ConstructMatrix(rotMat); 
   Vector3 r_cw = rotMat*(-camPos);
   resMat = rotMat;
-  resMat.elements[2] *= -1;
-  resMat.elements[6] *= -1;
-  resMat.elements[10] *= -1;
   resMat.elements[3] = r_cw.coords[0];
   resMat.elements[7] = r_cw.coords[1];
   resMat.elements[11] = r_cw.coords[2];
@@ -126,6 +123,7 @@ Matrix3 GetIntrinsicsMatrix(boost::intrusive_ptr<Camera> camera) {
   float u0 = contextSize3D.coords[0]/2;
   float v0 = contextSize3D.coords[1]/2;
   Matrix3 K;
+
   K.elements[0] = alpha;
   K.elements[1] = 0;
   K.elements[2] = -u0;

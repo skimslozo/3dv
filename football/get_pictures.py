@@ -45,6 +45,8 @@ from gfootball.env import config
 from gfootball.env import football_env
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from PIL import Image, ImageDraw
+
 
 from DataManager import DataManager
 
@@ -95,19 +97,19 @@ def main(_):
   env.reset()
   data_manager = DataManager()
 
-  camrot = np.array([0, 0, 0]) # handy to set the camera coordinates in Euler angles
+  camrot = np.array([60, 0, 0]) # handy to set the camera coordinates in Euler angles
   pos = 0
   try:
     for time in range(100):
       r = R.from_euler('xyz', camrot, degrees = True)
       carot_quat = r.as_quat()
-      pos += 0.1
+      pos += 1
       env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-      env._env._env.set_camera_node_position(0, 0, 80)
+      env._env._env.set_camera_node_position(0, -70, 40)
       env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3])
-      env._env._env.set_camera_fov(24)
+      env._env._env.set_camera_fov(10)
 
-      _, _, done, _ = env.step([])     
+      obs, _, done, _ = env.step([])     
 
       RT0 = procOut(env._env._env.get_extrinsics_matrix(), [3, 4])
       K0 = procOut(env._env._env.get_intrinsics_matrix(), [3, 3])
