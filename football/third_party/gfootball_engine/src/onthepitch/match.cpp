@@ -592,7 +592,7 @@ void Match::UpdateIngameCamera() {
 
       cameraFOV = (fov * 28.0f) - (cameraNodePosition.coords[1] / 30.0f);
       cameraNearCap = cameraNodePosition.coords[2];
-      cameraFarCap = 200;
+      cameraFarCap = 300;
 
     } else if (camMethod == 2) {
       DO_VALIDATION;

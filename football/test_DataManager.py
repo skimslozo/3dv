@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import pandas.testing
 
-from football.DataManager import DataManager
+from DataManager import DataManager
 import numpy as np
 from pathlib import Path
 import pandas as pd
