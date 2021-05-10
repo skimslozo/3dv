@@ -6,6 +6,8 @@ from PIL import Image
 import cv2
 import os
 
+import csv
+
 
 class DataManager:
     def __init__(self):
@@ -114,6 +116,24 @@ class DataManager:
         with open(path, 'rb') as f:
             self.data = pickle.load(f)
         return self.data
+
+    def write_csv_proj(self, run_name):
+        """ generate a csv file in the camera folder"""
+        self.load_data(run_name)
+        self.load_constants(run_name)
+
+
+        for cam in range(self.constants['amount_of_cams']):
+            cam_dir = 'cam_' + str(cam)
+            filename = 'xy.csv'
+            path = Path.cwd().parent / 'football_data' / run_name / 'frames' / cam_dir / filename
+            with open(path, mode='w') as xy_file:
+                xy_writer = csv.writer(xy_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+                xy_writer.writerows(self.get_points_2d(cam))
+
+
+        
 
     def load_constants(self, run_name):
         filename = run_name + '_constants.p'

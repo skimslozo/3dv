@@ -1,21 +1,27 @@
 """
 Script to run the various triangulations and vispy visualizations
 """
+
+import vispy
+import sys
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).absolute().parent.parent))
+sys.path.append(str(Path(__file__).absolute().parent.parent / 'football'))
 import numpy as np
 from SoccerVisualizer import SoccerVisualizer
 from EstimationMetrics import EstimationMetrics
 from football.DataManager import DataManager
 from triangulatepoints import triangulate_points_two_views as tri_tv
 from triangulatepoints import triangulate_points_nonlinear_refinement as tri_nlr
-import vispy
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).absolute().parent.parent / 'football'))
+
+
+
 
 
 datamanager = DataManager()
 
-data, constants = datamanager.load('test_run')
+data, constants = datamanager.load('valid')
 proj_mat_all = datamanager.get_proj_mat_all()
 points_2d_all = datamanager.get_points_2d_all()
 
