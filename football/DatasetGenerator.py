@@ -32,8 +32,10 @@ class DatasetGenerator():
     def __init__(self):
         pass
 
+
+
     def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False, 
-                        write_video=False, use_red_dot=False):
+                        write_video=False, use_red_dot=False, physics_steps_per_frame=10):
         """
         Automatically generate a data set for one game with multiple camera views
 
@@ -46,7 +48,9 @@ class DatasetGenerator():
         save_frames : if true the frames of the game will be saved
         steps : amount of steps the simulation should make
         write_video : if true a video will be made from the frames, should only be true when save_frames is true
-        -use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
+        use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
+        physics_steps_per_frame: 10 (Default). only tested with physics_steps_per_frame=1. 
+
         Returns
         -------
         None.
@@ -57,7 +61,7 @@ class DatasetGenerator():
         N = cam_positions.shape[0]
         for i in range(N):
             self.generate_camera(run_name=run_name, cam_pos=cam_positions[i, :], cam_rot=cam_rotations[i, :], cam_nr=i,
-                                 render=render, save_frames=save_frames, steps=steps, write_video=write_video, use_red_dot=use_red_dot)
+                                 render=render, save_frames=save_frames, steps=steps, write_video=write_video, use_red_dot=use_red_dot, physics_steps_per_frame=physics_steps_per_frame)
 
         self.data_manager.write_data(run_name)
         self.data_manager.write_constants(run_name)
@@ -80,7 +84,7 @@ class DatasetGenerator():
         return np.matrix(np.reshape(np.array(cout), size))
 
     def generate_camera(self, run_name, cam_nr=0, steps=100, cam_pos=np.array([0, 0, 80]), cam_rot=np.array([0, 0, 0]),
-                        level='tests.11_vs_11_deterministic', render=True, save_frames=False, write_video=False, use_red_dot=False):
+                        level='tests.11_vs_11_deterministic', render=True, save_frames=False, write_video=False, use_red_dot=False, physics_steps_per_frame=10):
         players = ''
 
         assert not (any(['agent' in player for player in players])
@@ -92,7 +96,13 @@ class DatasetGenerator():
             'real_time': True,
             'game_engine_random_seed': 42,
             'level' : level,
+            'physics_steps_per_frame': physics_steps_per_frame,
         })
+
+        if physics_steps_per_frame != 10:
+            config_update = {'real_time': False}
+            cfg.update(config_update)
+
         #if level:
         #    cfg['level'] = level
         env = football_env.FootballEnv(cfg)
