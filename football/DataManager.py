@@ -91,15 +91,10 @@ class DataManager:
         with open(path, 'wb') as f:
             pickle.dump(self.constants, f)
 
-    def write_frames(self, dirname):
-        path = Path.cwd().parent / 'football_data' / dirname / 'frames'
-        path.mkdirs(parents=True, exist_ok=True)
+    def write_frames(self, run_name):
         for key in self.frames.keys():
             for i, frame in enumerate(self.frames[key]):
-                _file = key + '_' + str(i).zfill(5) + '.png'
-                img = Image.fromarray(frame.astype('uint8'))
-                img.save(str(path / _file), format='png')
-                img.close()
+                self.write_frame(time=i, frame=frame, cam=key[-1], run_name=run_name)
 
     def write_frame(self, time, frame, cam, run_name):
         cam_dir = 'cam_' + str(cam)
