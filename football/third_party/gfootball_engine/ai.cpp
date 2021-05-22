@@ -153,6 +153,12 @@ class GameEnv_Python : public GameEnv {
       return l;
     }
 
+    bool is_ball_OOB(){
+      ContextHolder c(this);
+      bool bOOB = isBallOOB();
+      return bOOB;
+    }
+
     bp::list get_pixel_coordinates() { 
       ContextHolder c(this);
       bp::list res;
@@ -285,6 +291,7 @@ BOOST_PYTHON_MODULE(_gameplayfootball) {
       .def("get_extrinsics_matrix", &GameEnv_Python::get_extrinsics_matrix)
       .def("get_intrinsics_matrix", &GameEnv_Python::get_intrinsics_matrix)
       .def("get_pixel_coordinates", &GameEnv_Python::get_pixel_coordinates)
+      .def("is_ball_OOB", &GameEnv_Python::is_ball_OOB)
       .def("get_camera_fov", &GameEnv_Python::get_camera_fov_py);
 
   class_<Vector3>("Vector3", init<float, float, float>())

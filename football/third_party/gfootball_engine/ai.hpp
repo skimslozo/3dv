@@ -61,6 +61,7 @@ struct GameEnv {
   void set_camera_orientation(float x, float x, float z, float w);
   void set_camera_node_position(float x, float y, float z);
   void set_camera_fov(float fov);
+  bool isballOOB();
 
   // Executes the action inside the game.
   void action(int action, bool left_team, int player);

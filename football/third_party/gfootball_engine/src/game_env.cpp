@@ -168,6 +168,11 @@ void GameEnv::setCameraNodeOrientation(Quaternion tmp) {
   GetGameTask()->GetMatch()->custom_cam = true;
 }
 
+bool GameEnv::isBallOOB(){
+  bool ans = GetGameTask()->GetMatch()->camera->ballOOB;
+  return ans;
+}
+
 Vector3 GameEnv::Get3DBallPosition() {
   Vector3 ballPos = GetGameTask()->GetMatch()->GetBall()->GetAveragePosition(0);
   return ballPos;
