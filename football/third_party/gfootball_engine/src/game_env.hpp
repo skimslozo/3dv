@@ -67,6 +67,7 @@ struct GameEnv {
   Vector3 Get3DBallPosition();
   Vector3 Get2DBallPosition();
   Vector3 GetPixCoord();
+  bool isBallOOB();
 
   // Executes the action inside the game.
   bool sticky_action_state(int action, bool left_team, int player);

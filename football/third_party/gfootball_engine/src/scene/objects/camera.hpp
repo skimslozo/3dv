@@ -53,6 +53,7 @@ namespace blunted {
 
       virtual void RecursiveUpdateSpatialData(e_SpatialDataType spatialDataType, e_SystemType excludeSystem = e_SystemType_None);
       float custom_fov = 0.0f;
+      bool ballOOB = false;
 
     protected:
       float fov = 0.0f;
