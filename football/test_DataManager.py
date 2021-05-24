@@ -175,5 +175,9 @@ class TestDataManager(TestCase):
         file = Path.cwd().parent / 'football_data/test/frames/cam_0/cam0_00007.png'
         self.assertTrue(file.is_file())
 
+    def test_get_points_2d_noise(self):
+        points_noisy = self.data_manager.get_points_2d_noise(cam_num=0)
+
+
 if __name__ == '__main__':
     TestDataManager.run()
