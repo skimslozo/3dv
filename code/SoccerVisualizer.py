@@ -32,7 +32,7 @@ class SoccerVisualizer():
         '''
         Draw Soccer Field for reference [IMAGE VERSION]
         '''
-        field = cv2.imread('code/field.png')[13:394,27:613,0]
+        field = cv2.imread('field.png')[13:394,27:613,0]
         field[field>0] = 255
         field_size = np.shape(field)
         football_field = visuals.Image(data = field[:,:].T, parent = self.view.scene, cmap='grays')
@@ -59,6 +59,14 @@ class SoccerVisualizer():
         self.view.add(ball_vis)
 
     #def draw_ball_sphere(self, position, color, size_sphere):
+
+    def draw_3d_line(self, points, color):
+        Plot3D = vispy.scene.visuals.create_visual_node(vispy.visuals.LinePlotVisual)
+
+        pos = np.c_[points[0], points[1], points[2]]
+        Plot3D(pos, width=1000.0, color=color, edge_color='w', parent=self.view.scene)
+
+
 
 
 if __name__ == '__main__':
