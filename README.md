@@ -18,6 +18,7 @@
 * [Midterm Presentation Slides](https://docs.google.com/presentation/d/1muzkyLSw_7Nf9fOaegXsPI-R6865XZPMH31HjMHUhFw/edit#slide=id.gd2ad2b4450_5_3)
 * [Hand Label Pictures](https://github.com/qaprosoft/labelImg)
 * [Final Paper Outline](https://docs.google.com/document/d/186wmasgGrZnZuw9eYNlKpqqP2u3gKj774uPydnajW0o/edit?usp=sharing)
+* [Final Presentation](https://docs.google.com/presentation/d/1BE0HA_Y6XRBG14XwHTo9m5vSwsqMllhRKUUvcAC5g6w/edit?usp=sharing)
 
 To set up google football simulation go to https://github.com/google-research/football
 
