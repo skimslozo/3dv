@@ -134,32 +134,32 @@ class TestDataManager(TestCase):
 
 
     def test_write_data(self):
-        self.data_manager.write_data('test_data.p')
+        self.data_manager.write_data('test')
 
-        file = Path(Path.cwd().parent / 'football_data/test_data.p')
+        file = Path(Path.cwd().parent / 'football_data/test/test_data.p')
         self.assertTrue(file.is_file())
 
     def test_write_constants(self):
-        self.data_manager.write_constants('test_constants.p')
-        file = Path(Path.cwd().parent / 'football_data/test_constants.p')
+        self.data_manager.write_constants('test')
+        file = Path(Path.cwd().parent / 'football_data/test/test_constants.p')
         self.assertTrue(file.is_file())
 
     def test_load_data(self):
-        self.data_manager.write_data('test_data.p')
+        self.data_manager.write_data('test')
         data_manager2 = DataManager()
-        data_manager2.load_data('test_data.p')
+        data_manager2.load_data('test')
         self.assertTrue(len(data_manager2.data) == len(self.data_manager.data))
         for x, y in zip(data_manager2.data, self.data_manager.data):
             self.assertTrue(x.keys() == y.keys())
 
     def test_load_constants(self):
-        self.data_manager.write_constants('test_constants.p')
+        self.data_manager.write_constants('test')
         data_manager2 = DataManager()
-        data_manager2.load_constants('test_constants.p')
+        data_manager2.load_constants('test')
         self.assertTrue(data_manager2.constants.keys() == self.data_manager.constants.keys())
 
     def test_load_frame(self):
-        self.data_manager.write_frame(time=7, cam=0, frame=self.frame, dirname='test')
+        self.data_manager.write_frame(time=7, cam=0, frame=self.frame, run_name='test')
         frame_new = self.data_manager.load_frame(7, 'test', 0)
         np.testing.assert_array_equal(frame_new, self.frame.astype('uint8'))
 
@@ -167,13 +167,17 @@ class TestDataManager(TestCase):
         self.data_manager.write_frames('test')
         for key in self.data_manager.frames:
             for i in range(len(self.data_manager.frames[key])):
-                file = Path.cwd().parent / 'football_data/test' / (key + '_' + str(i).zfill(5) + '.png')
+                file = Path.cwd().parent / 'football_data/test/frames' / str('cam_' + key[-1]) / (key + '_' + str(i).zfill(5) + '.png')
                 self.assertTrue(file.is_file())
 
     def test_write_frame(self):
-        self.data_manager.write_frame(time=7, cam=0, frame=self.frame, dirname='test')
-        file = Path.cwd().parent / 'football_data/test' / 'cam0_00007.png'
+        self.data_manager.write_frame(time=7, cam=0, frame=self.frame, run_name='test')
+        file = Path.cwd().parent / 'football_data/test/frames/cam_0/cam0_00007.png'
         self.assertTrue(file.is_file())
+
+    def test_get_points_2d_noise(self):
+        points_noisy = self.data_manager.get_points_2d_noise(cam_num=0)
+
 
 if __name__ == '__main__':
     TestDataManager.run()
