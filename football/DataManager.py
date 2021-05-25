@@ -58,6 +58,10 @@ class DataManager:
         self._check_time(time)
         self.data[time]['cam' + str(cam) + '_orientation'] = orientation
 
+    def oob_flag(self, time, oob_flag, cam):
+        self._check_time(time)
+        self.data[time]['cam' + str(cam) + '_oob_flag'] = oob_flag
+
     def set_frame(self, time, frame, cam):
         key = 'cam' + str(cam)
         if not key in self.frames.keys():
@@ -69,13 +73,14 @@ class DataManager:
         else:
             raise IndexError('Parameter time out of bounds. Please populate in order.')
 
-    def set_cam(self, time, extrinsic_mat, cam_node_pos, cam_node_orientation, cam_orientation, pix_ball_pos, cam):
+    def set_cam(self, time, extrinsic_mat, cam_node_pos, cam_node_orientation, cam_orientation, pix_ball_pos, oob_flag, cam):
         self.set_extrinsic_mat(time, extrinsic_mat, cam)
         self.set_cam_node_pos(time, cam_node_pos, cam)
         self.set_cam_node_orientation(time, cam_node_orientation, cam)
         self.set_cam_orientation(time, cam_orientation, cam)
         self.set_pix_ball_pos(time, pix_ball_pos, cam)
         self.set_amount_of_cams(cam)
+        self.set_oob_flag(time, oob_flag, cam)
 
     def write_data(self, run_name):
         filename = run_name + '_data.p'
@@ -187,3 +192,9 @@ class DataManager:
 
     def get_points_2d_noise_all(self, std=1):
         return np.array([self.get_points_2d_noise(cam, std) for cam in range(self.constants['amount_of_cams'])])
+
+    def get_oob_flags(self, cam_num):
+        return np.array([d['cam' + str(cam_num) + '_oob_flag'] for d in self.data])
+
+    def get_oob_flags_all(self):
+        return np.array([self.get_oob_flags(cam) for cam in range(self.constants['amount_of_cams'])])

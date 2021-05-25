@@ -35,7 +35,8 @@ class DatasetGenerator():
 
 
     def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False, 
-                        write_video=False, use_red_dot=False, physics_steps_per_frame=10):
+                        write_video=False, use_red_dot=False, physics_steps_per_frame=10, amount_cam_follow=0,
+                        set_fov=24):
         """
         Automatically generate a data set for one game with multiple camera views
 
@@ -49,7 +50,9 @@ class DatasetGenerator():
         steps : amount of steps the simulation should make
         write_video : if true a video will be made from the frames, should only be true when save_frames is true
         use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
-        physics_steps_per_frame: 10 (Default). only tested with physics_steps_per_frame=1. 
+        physics_steps_per_frame: 10 (Default). only tested with physics_steps_per_frame=1.
+        amount_cam_follow: amount of cameras that should follow the ball, starting from the first.
+        set_fov: Changes the field of view, NOT TESTED, EXPERIMENTAL
 
         Returns
         -------
@@ -59,9 +62,19 @@ class DatasetGenerator():
             save_frames = True
         self.data_manager = DataManager()
         N = cam_positions.shape[0]
+        if N < amount_cam_follow:
+            print('amount_cam_follow to large, will be set to max')
+            amount_cam_follow = N
         for i in range(N):
+            if i < amount_cam_follow:
+                cam_follow = True
+            else:
+                cam_follow = False
+
             self.generate_camera(run_name=run_name, cam_pos=cam_positions[i, :], cam_rot=cam_rotations[i, :], cam_nr=i,
-                                 render=render, save_frames=save_frames, steps=steps, write_video=write_video, use_red_dot=use_red_dot, physics_steps_per_frame=physics_steps_per_frame)
+                                 render=render, save_frames=save_frames, steps=steps,
+                                 use_red_dot=use_red_dot, physics_steps_per_frame=physics_steps_per_frame,
+                                 cam_follow=cam_follow, set_fov=set_fov)
 
         self.data_manager.write_data(run_name)
         self.data_manager.write_constants(run_name)
@@ -84,7 +97,8 @@ class DatasetGenerator():
         return np.matrix(np.reshape(np.array(cout), size))
 
     def generate_camera(self, run_name, cam_nr=0, steps=100, cam_pos=np.array([0, 0, 80]), cam_rot=np.array([0, 0, 0]),
-                        level='tests.11_vs_11_deterministic', render=True, save_frames=False, write_video=False, use_red_dot=False, physics_steps_per_frame=10):
+                        level='tests.11_vs_11_deterministic', render=True, save_frames=False, use_red_dot=False,
+                        physics_steps_per_frame=10, cam_follow=False, set_fov=24):
         players = ''
 
         assert not (any(['agent' in player for player in players])
@@ -95,7 +109,7 @@ class DatasetGenerator():
             'players': players,
             'real_time': True,
             'game_engine_random_seed': 42,
-            'level' : level,
+            'level': level,
             'physics_steps_per_frame': physics_steps_per_frame,
         })
 
@@ -118,21 +132,28 @@ class DatasetGenerator():
                 carot_quat = r.as_quat()
                 pos += 0.1
                 env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-                env._env._env.set_camera_node_position(float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2]))
+
+                if (cam_follow):
+                    ball3d = self.procOut(cout=env._env._env.get_3d_ball_position(), size=[3, 1])
+                    env._env._env.set_camera_node_position(float(cam_pos[0]+ball3d[0]), float(cam_pos[1]+ball3d[1]),
+                                                           float(cam_pos[2]+ball3d[2]))
+                else:
+                    env._env._env.set_camera_node_position(float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2]))
+
                 env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3])
-                env._env._env.set_camera_fov(24)
+                env._env._env.set_camera_fov(set_fov)
 
                 _, _, done, _ = env.step([])
 
                 RT0 = self.procOut(cout=env._env._env.get_extrinsics_matrix(), size=[3, 4])
                 K0 = self.procOut(cout=env._env._env.get_intrinsics_matrix(), size=[3, 3])
                 ball3d = self.procOut(cout=env._env._env.get_3d_ball_position(), size=[3, 1])
-                ball3dh = np.transpose(np.matrix(np.append(np.array(ball3d), 1)))
                 camPos0 = self.procOut(cout=env._env._env.get_camera_node_position(), size=[3, 1])
                 camOr0 = self.procOut(cout=env._env._env.get_camera_orientation(), size=[1, 4])
                 CNO0 = self.procOut(cout=env._env._env.get_camera_node_orientation(), size=[1, 4])
                 fov = env._env._env.get_camera_fov()
                 pixcoord0 = self.procOut(cout=env._env._env.get_pixel_coordinates(), size=[2, 1])
+                oob_flag = env._env._env.is_ball_OOB() #out of bounds flag
 
                 # print("CNO: ", env._env._env.get_camera_node_orientation())
                 # print("CNP1: ", env._env._env.get_camera_node_position())
@@ -151,7 +172,9 @@ class DatasetGenerator():
                                           cam_node_pos=camPos0,
                                           cam_node_orientation=CNO0,
                                           pix_ball_pos=pixcoord0,
-                                          cam_orientation=camOr0, cam=cam_nr)
+                                          cam_orientation=camOr0,
+                                          oob_flag=oob_flag,
+                                          cam=cam_nr)
                 if save_frames:
                     _frame = env.observation()['frame']
                     if use_red_dot:
@@ -163,7 +186,7 @@ class DatasetGenerator():
                         leftUpPoint = (x-r, y-r)
                         rightDownPoint = (x+r, y+r)
                         twoPointList = [leftUpPoint, rightDownPoint]
-                        draw.ellipse(twoPointList, fill=(255,0,0,255))
+                        draw.ellipse(twoPointList, fill=(255, 0, 0, 255))
                         _frame = np.array(img)
                     self.data_manager.write_frame(time=time, frame=_frame, cam=cam_nr, run_name=run_name)
 
