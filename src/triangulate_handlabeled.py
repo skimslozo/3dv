@@ -12,8 +12,8 @@ cwd = Path.cwd().parent
 cam1_path = Path('hand_labeled/1015_1030/cam1/xy.csv')
 cam7_path = Path('hand_labeled/1015_1030/cam7/xy.csv')
 calib_path = Path('hand_labeled/calib.json')
-cam_1 = pd.read_csv(cwd / cam1_path, names=['x', 'y'])[212:305]
-cam_7 = pd.read_csv(cwd / cam7_path, names=['x', 'y']).fillna(-1)[212:305]
+cam_1 = pd.read_csv(cwd / cam1_path, names=['x', 'y'])[212:600]
+cam_7 = pd.read_csv(cwd / cam7_path, names=['x', 'y']).fillna(-1)[212:600]
 
 with open(cwd/calib_path) as f:
     calib = json.load(f)
@@ -24,11 +24,11 @@ K7 = np.array(calib['7']['K']).reshape(3, 3)
 R1 = np.array(calib['1']['R']).reshape(3, 3)
 R7 = np.array(calib['7']['R']).reshape(3, 3)
 
-T1 = np.array(calib['1']['T'])
-T7 = np.array(calib['7']['T'])
+T1 = np.array(calib['1']['T']).reshape(3, 1)
+T7 = np.array(calib['7']['T']).reshape(3, 1)
 
-proj_mat1 = np.hstack([K1 @ R1, T1.reshape(3, 1)])
-proj_mat7 = np.hstack([K7 @ R7, T7.reshape(3, 1)])
+proj_mat1 = K1 @ np.hstack([R1, T1])
+proj_mat7 = K7 @ np.hstack([R7, T7])
 
 num_points = len(cam_1)
 
