@@ -153,6 +153,7 @@ class DatasetGenerator():
                 CNO0 = self.procOut(cout=env._env._env.get_camera_node_orientation(), size=[1, 4])
                 fov = env._env._env.get_camera_fov()
                 pixcoord0 = self.procOut(cout=env._env._env.get_pixel_coordinates(), size=[2, 1])
+                oob_flag = env._env._env.is_ball_OOB() #out of bounds flag
 
                 # print("CNO: ", env._env._env.get_camera_node_orientation())
                 # print("CNP1: ", env._env._env.get_camera_node_position())
@@ -171,7 +172,9 @@ class DatasetGenerator():
                                           cam_node_pos=camPos0,
                                           cam_node_orientation=CNO0,
                                           pix_ball_pos=pixcoord0,
-                                          cam_orientation=camOr0, cam=cam_nr)
+                                          cam_orientation=camOr0,
+                                          oob_flag=oob_flag,
+                                          cam=cam_nr)
                 if save_frames:
                     _frame = env.observation()['frame']
                     if use_red_dot:
