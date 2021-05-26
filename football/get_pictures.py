@@ -122,7 +122,7 @@ def main(_):
       CNO0 = procOut(env._env._env.get_camera_node_orientation(), [1, 4])
       fov = env._env._env.get_camera_fov()
       pixcoord0 = procOut(env._env._env.get_pixel_coordinates(), [2, 1])
-
+      oob_flag = env._env._env.is_ball_OOB()
 
       # print("CNO: ", env._env._env.get_camera_node_orientation())
       # print("CNP1: ", env._env._env.get_camera_node_position())
@@ -141,7 +141,9 @@ def main(_):
                            cam_node_pos=camPos0,
                            cam_node_orientation=CNO0,
                            pix_ball_pos=pixcoord0,
-                           cam_orientation=camOr0, cam=0)
+                           cam_orientation=camOr0,
+                           oob_flag=oob_flag,
+                           cam=0)
       if SAVE_FRAMES:
         data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=RUN_NAME)
 
