@@ -58,7 +58,7 @@ class DataManager:
         self._check_time(time)
         self.data[time]['cam' + str(cam) + '_orientation'] = orientation
 
-    def oob_flag(self, time, oob_flag, cam):
+    def set_oob_flag(self, time, oob_flag, cam):
         self._check_time(time)
         self.data[time]['cam' + str(cam) + '_oob_flag'] = oob_flag
 
