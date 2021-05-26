@@ -24,3 +24,34 @@ To set up google football simulation go to https://github.com/google-research/fo
 
 ## Project Managment 
 In general, for every task do a github issue
+
+## Instructions
+To generate a dataset navigate into the '/football' directory where there is a file called 'datagen.py'. 
+The script in 'datagen.py', when run, will automatically generate a dataset in a folder contained in this repository's 
+root folder called 'football_data'. 
+
+Also, to be found in the '/football' directory are two .csv files, 'camera_positions.csv' and 'camera_rotation.csv'. In
+these one can define the cameras for which data should be generated, this is done by automatically running the same 
+deterministic football game in the simulator with these defined camera positions and rotations. 
+The lines in these two files represent the same cameras position and rotation respectively. The rotations are to be
+given in xyz Euler angles. Please assert that for each camera defined in 'camera_positions.csv' you also have a rotation
+defined in 'camera_rotations.csv'. The origin for positions is in the center of the field. 
+
+The 'datagen.py' script calls a function that generates all data automatically. Here you can set various parameters
+for the dataset.
+
+| Parameter               | Default | Explanation                                                                                        |
+|-------------------------|---------|----------------------------------------------------------------------------------------------------|
+| run_name                | -       | Name of the run, a directory with the data will be generated.                                      |
+| cam_positions           | -       | Nx3 array containing the positions of N different cameras. (read from the csv)                     |
+| cam_rotations           | -       | Nx3 array containing the rotation (xyz Euler angles) of N different cameras. (read from the csv)   |
+| steps                   | 100     | Amount of steps (frames) the simulation should make.                                               |
+| render                  | True    | If true, the pygame window will appear and render the game (slower). (Necessary for 'save_frames') |
+| save_frames             | True    | If true, the frames of the game will be saved.                                                     |
+| write_video             | False   | If true, a video will be made from the frames. ('save_frames' need to be True)                     |
+| use_red_dot             | False   | If true, a red dot will be rendered on each frame to highlight the ball.                           |
+| physics_steps_per_frame | 10      | Changes the "frame rate", lower value means higher frame rate (not tested for values < 1)          |
+| amount_cam_follow       | 0       | Integer, amount of cameras that should follow the ball, starting from the first.                   |
+| render_resolution_x     | 1280    | Height of the rendered frame                                                                       |
+| render_resolution_y     | 720     | Width of the rendered frame                                                                        |
+| set_fov                 | 24      | Changes the field of view for all cameras.                                                         |

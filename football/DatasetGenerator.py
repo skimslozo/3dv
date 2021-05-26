@@ -34,9 +34,9 @@ class DatasetGenerator():
 
 
 
-    def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=False, 
+    def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=True,
                         write_video=False, use_red_dot=False, physics_steps_per_frame=10, amount_cam_follow=0,
-                        set_fov=24):
+                        render_resolution_x=1280, render_resolution_y=720, set_fov=24):
         """
         Automatically generate a data set for one game with multiple camera views
 
@@ -52,7 +52,7 @@ class DatasetGenerator():
         use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
         physics_steps_per_frame: 10 (Default). only tested with physics_steps_per_frame=1.
         amount_cam_follow: amount of cameras that should follow the ball, starting from the first.
-        set_fov: Changes the field of view, NOT TESTED, EXPERIMENTAL
+        set_fov: Changes the field of view of all cameras
 
         Returns
         -------
@@ -74,7 +74,8 @@ class DatasetGenerator():
             self.generate_camera(run_name=run_name, cam_pos=cam_positions[i, :], cam_rot=cam_rotations[i, :], cam_nr=i,
                                  render=render, save_frames=save_frames, steps=steps,
                                  use_red_dot=use_red_dot, physics_steps_per_frame=physics_steps_per_frame,
-                                 cam_follow=cam_follow, set_fov=set_fov)
+                                 cam_follow=cam_follow, render_resolution_x=render_resolution_x,
+                                 render_resolution_y=render_resolution_y, set_fov=set_fov)
 
         self.data_manager.write_data(run_name)
         self.data_manager.write_constants(run_name)
@@ -98,7 +99,8 @@ class DatasetGenerator():
 
     def generate_camera(self, run_name, cam_nr=0, steps=100, cam_pos=np.array([0, 0, 80]), cam_rot=np.array([0, 0, 0]),
                         level='tests.11_vs_11_deterministic', render=True, save_frames=False, use_red_dot=False,
-                        physics_steps_per_frame=10, cam_follow=False, set_fov=24):
+                        physics_steps_per_frame=10, cam_follow=False, render_resolution_x=1280, render_resolution_y=720,
+                        set_fov=24):
         players = ''
 
         assert not (any(['agent' in player for player in players])
@@ -111,6 +113,8 @@ class DatasetGenerator():
             'game_engine_random_seed': 42,
             'level': level,
             'physics_steps_per_frame': physics_steps_per_frame,
+            'render_resolution_x': render_resolution_x,
+            'render_resolution_y': render_resolution_y
         })
 
         if physics_steps_per_frame != 10:
@@ -153,7 +157,7 @@ class DatasetGenerator():
                 CNO0 = self.procOut(cout=env._env._env.get_camera_node_orientation(), size=[1, 4])
                 fov = env._env._env.get_camera_fov()
                 pixcoord0 = self.procOut(cout=env._env._env.get_pixel_coordinates(), size=[2, 1])
-                oob_flag = env._env._env.is_ball_OOB() #out of bounds flag
+                oob_flag = env._env._env.is_ball_OOB()  # out of bounds flag
 
                 # print("CNO: ", env._env._env.get_camera_node_orientation())
                 # print("CNP1: ", env._env._env.get_camera_node_position())
