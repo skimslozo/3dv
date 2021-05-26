@@ -87,6 +87,8 @@ def main(_):
       'dump_full_episodes': True,
       'players': players,
       'real_time': FLAGS.real_time,
+      'render_resolution_x': 1920,
+      'render_resolution_y': 1080
   })
   if FLAGS.level:
     cfg['level'] = FLAGS.level
@@ -127,8 +129,8 @@ def main(_):
       # print("CO: ", env._env._env.get_camera_orientation())
       # print("CFOV: ", env._env._env.get_camera_fov())
       # print('RT', RT)
-      # print("PIX2D 1: ", env._env._env.get_pixel_coordinates())
-      print(env._env._env.is_ball_OOB())
+      print("PIX2D 1: ", env._env._env.get_pixel_coordinates())
+      # print(env._env._env.is_ball_OOB())
       # print('Ball 3D: ', ball3d)
       # print('----------------------------')
       data_manager.set_fov(fov)
