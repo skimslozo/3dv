@@ -24,6 +24,7 @@
 #include "../base/log.hpp"
 #include "../game_env.hpp"
 #include "../main.hpp"
+#include "../utils.hpp"
 #include "../menu/pagefactory.hpp"
 #include "../menu/startmatch/loadingmatch.hpp"
 #include "../scene/objectfactory.hpp"
@@ -1076,7 +1077,9 @@ void Match::FetchPutBuffers() {
 void Match::Put() {
   DO_VALIDATION;
   bool reverse = GetScenarioConfig().reverse_team_processing;
-
+  Vector3 ball3dpos = ball->GetAveragePosition(0);
+  Vector3 ball2dpos = GetPixelCoordinates(ball3dpos, camera);
+  processBallOOB(ball2dpos, camera);
   DO_VALIDATION;
   ball->Put();
   teams[first_team]->Put(reverse);

@@ -87,8 +87,8 @@ def main(_):
       'dump_full_episodes': True,
       'players': players,
       'real_time': FLAGS.real_time,
-      'render_resolution_x': 1920,
-      'render_resolution_y': 1080
+      'render_resolution_x': 1280,
+      'render_resolution_y': 720
   })
   if FLAGS.level:
     cfg['level'] = FLAGS.level
@@ -99,17 +99,17 @@ def main(_):
   env.reset()
   data_manager = DataManager()
 
-  camrot = np.array([60, 0, 0]) # handy to set the camera coordinates in Euler angles
+  camrot = np.array([0, 0, 0]) # handy to set the camera coordinates in Euler angles
   pos = 0
   try:
-    for time in range(100):
+    for time in range(200):
       r = R.from_euler('xyz', camrot, degrees = True)
       carot_quat = r.as_quat()
       pos += 1
       env._env._env.set_camera_node_orientation(-0.0, -0.0, -0.0, 1.0)
-      env._env._env.set_camera_node_position(0, -70, 40)
+      env._env._env.set_camera_node_position(0, 6, 40)
       env._env._env.set_camera_orientation(carot_quat[0], carot_quat[1], carot_quat[2], carot_quat[3])
-      env._env._env.set_camera_fov(10)
+      env._env._env.set_camera_fov(24)
 
       obs, _, done, _ = env.step([])     
 
@@ -122,6 +122,7 @@ def main(_):
       CNO0 = procOut(env._env._env.get_camera_node_orientation(), [1, 4])
       fov = env._env._env.get_camera_fov()
       pixcoord0 = procOut(env._env._env.get_pixel_coordinates(), [2, 1])
+      oob = env._env._env.is_ball_OOB()
 
 
       # print("CNO: ", env._env._env.get_camera_node_orientation())
@@ -129,8 +130,8 @@ def main(_):
       # print("CO: ", env._env._env.get_camera_orientation())
       # print("CFOV: ", env._env._env.get_camera_fov())
       # print('RT', RT)
-      print("PIX2D 1: ", env._env._env.get_pixel_coordinates())
-      # print(env._env._env.is_ball_OOB())
+      # print("PIX2D 1: ", env._env._env.get_pixel_coordinates())
+      print(env._env._env.is_ball_OOB())
       # print('Ball 3D: ', ball3d)
       # print('----------------------------')
       data_manager.set_fov(fov)
@@ -141,7 +142,7 @@ def main(_):
                            cam_node_pos=camPos0,
                            cam_node_orientation=CNO0,
                            pix_ball_pos=pixcoord0,
-                           cam_orientation=camOr0, cam=0)
+                           cam_orientation=camOr0, cam=0, oob_flag=oob)
       if SAVE_FRAMES:
         data_manager.write_frame(time=time, frame=env.observation()['frame'], cam=0, dirname=RUN_NAME)
 
