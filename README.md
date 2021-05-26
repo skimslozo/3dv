@@ -52,4 +52,6 @@ for the dataset.
 | use_red_dot             | False   | If true, a red dot will be rendered on each frame to highlight the ball.                           |
 | physics_steps_per_frame | 10      | Changes the "frame rate", lower value means higher frame rate (not tested for values < 1)          |
 | amount_cam_follow       | 0       | Integer, amount of cameras that should follow the ball, starting from the first.                   |
+| render_resolution_x     | 1280    | Height of the rendered frame                                                                       |
+| render_resolution_y     | 720     | Width of the rendered frame                                                                        |
 | set_fov                 | 24      | Changes the field of view for all cameras.                                                         |
