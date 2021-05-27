@@ -169,11 +169,17 @@ class DataManager:
         cv2.destroyAllWindows()
         video.release()
 
-    def get_points_2d(self, cam_num):
-        return np.array([d['cam' + str(cam_num) + '_pix_ball_pos'] for d in self.data]).reshape(-1, 2)
+    def get_points_2d(self, cam_num, set_oob_nan=False):
+        if set_oob_nan:
+            oob_flags = self.get_oob_flags(cam_num)
+            points_2d = np.array([d['cam' + str(cam_num) + '_pix_ball_pos'] for d in self.data]).reshape(-1, 2)
+            points_2d[oob_flags, :] = np.nan
+            return points_2d
+        else:
+            return np.array([d['cam' + str(cam_num) + '_pix_ball_pos'] for d in self.data]).reshape(-1, 2)
 
-    def get_points_2d_noise(self, cam_num, std=1):
-        points = self.get_points_2d(cam_num)
+    def get_points_2d_noise(self, cam_num, set_oob_nan=False, std=1):
+        points = self.get_points_2d(cam_num, set_oob_nan=set_oob_nan)
         noise = np.random.normal(0, std, len(points.flatten()))
         return points + noise.reshape(points.shape)
 
@@ -187,14 +193,16 @@ class DataManager:
         k = np.array(self.constants['intrinsic_mat'])
         return np.array([(k @ self.get_ext_mat(cam)) for cam in range(self.constants['amount_of_cams'])])
 
-    def get_points_2d_all(self):
-        return np.array([self.get_points_2d(cam) for cam in range(self.constants['amount_of_cams'])])
+    def get_points_2d_all(self, set_oob_nan = False):
+        return np.array([self.get_points_2d(cam, set_oob_nan=set_oob_nan) for cam in range(self.constants['amount_of_cams'])])
 
-    def get_points_2d_noise_all(self, std=1):
-        return np.array([self.get_points_2d_noise(cam, std) for cam in range(self.constants['amount_of_cams'])])
+    def get_points_2d_noise_all(self, set_oob_nan=False, std=1):
+        return np.array([self.get_points_2d_noise(cam, set_oob_nan=set_oob_nan, std=std) for cam in range(self.constants['amount_of_cams'])])
 
     def get_oob_flags(self, cam_num):
         return np.array([d['cam' + str(cam_num) + '_oob_flag'] for d in self.data])
 
     def get_oob_flags_all(self):
         return np.array([self.get_oob_flags(cam) for cam in range(self.constants['amount_of_cams'])])
+
+
