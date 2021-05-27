@@ -152,24 +152,22 @@ Vector3 GetPixelCoordinates(const Vector3 &pos3D, boost::intrusive_ptr<Camera> c
   K.MultiplyVec4(xc, yc, zc, 0, xp, yp, zp, w);
   int out1 = static_cast<int>(floor(xp/zp)); 
   int out2 = static_cast<int>(floor(yp/zp));
-  if (((out1 >= 0) && (out1 <= 2 * abs(K.elements[2]))) && ((out2 >= 0) && (out2 <= 2 * abs(K.elements[5])))) {
-    camera->ballOOB = false;
-  } else {
-    camera->ballOOB = true;
-  }
-  if (out1 < 0){
-    out1 = 0;
-  } else if (out1 > 2 * abs(K.elements[2])){
-    out1 = 2 * abs(K.elements[2]);
-  }
-  if (out2 < 0){
-    out2 = 0;
-  } else if (out2 > 2 * abs(K.elements[5])){
-    out2 = 2 * abs(K.elements[5]);
-  }
   Vector3 out(out1, out2, 0);
   return out;
 }
+
+void processBallOOB(const Vector3 &pos2D, boost::intrusive_ptr<Camera> camera){
+  float out1 = pos2D.coords[0];
+  float out2 = pos2D.coords[1];
+  Vector3 contextSize3D = GetGraphicsSystem()->GetContextSize();
+  if (((out1 >= 0) && (out1 <= contextSize3D.coords[0])) && ((out2 >= 0) && (out2 <= contextSize3D.coords[1]))) {
+    camera->ballOOB = false;
+  } else {
+    camera->ballOOB = true;
+  }  
+}
+
+
 
 int GetVelocityID(e_Velocity velo, bool treatDribbleAsWalk) {
   DO_VALIDATION;
