@@ -45,10 +45,8 @@ from gfootball.env import config
 from gfootball.env import football_env
 import numpy as np
 from scipy.spatial.transform import Rotation as R
-from PIL import Image, ImageDraw
 
-
-from DataManager import DataManager
+from src.DataManager import DataManager
 
 # Settings for saving data
 RUN_NAME = 'run1'

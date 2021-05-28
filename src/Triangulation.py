@@ -11,7 +11,7 @@ sys.path.append(str(Path(__file__).absolute().parent.parent / 'football'))
 import numpy as np
 from SoccerVisualizer import SoccerVisualizer
 from EstimationMetrics import EstimationMetrics
-from football.DataManager import DataManager
+from src.DataManager import DataManager
 from triangulatepoints import triangulate_points_two_views as tri_tv
 from triangulatepoints import triangulate_points_nonlinear_refinement as tri_nlr
 from src.TrajectoryEstimation import interpolate_3d
