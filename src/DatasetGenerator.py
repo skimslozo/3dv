@@ -32,11 +32,10 @@ class DatasetGenerator():
     def __init__(self):
         pass
 
-
-
-    def generate_dataset(self, run_name, cam_positions, cam_rotations, steps=100, render=True, save_frames=True,
-                        write_video=False, use_red_dot=False, physics_steps_per_frame=10, amount_cam_follow=0,
-                        render_resolution_x=1280, render_resolution_y=720, set_fov=24):
+    def generate_dataset(self, run_name, cam_positions, cam_rotations, level='tests.11_vs_11_deterministic', steps=100,
+                         render=True, save_frames=True,
+                         write_video=False, use_red_dot=False, physics_steps_per_frame=10, amount_cam_follow=0,
+                         render_resolution_x=1280, render_resolution_y=720, set_fov=24):
         """
         Automatically generate a data set for one game with multiple camera views
 
@@ -45,6 +44,9 @@ class DatasetGenerator():
         run_name :  name of the run, a directory with the data will be generated
         cam_positions : Nx3 array containing the positions of N different cameras
         cam_rotations: Nx3 array containing the rotation of N different cameras
+        level: what deterministic scenario should be used. Options can be found in football/gfootball/scenarios/test .
+        IMPORTANT: if you want to use a scenario that does not have the ending '_deterministic', open the scenario file
+        and insure that the flag 'builder.config().deterministic' is set to True!
         render : if true the pygame window will appear and render the game (slower)
         save_frames : if true the frames of the game will be saved
         steps : amount of steps the simulation should make
@@ -74,7 +76,7 @@ class DatasetGenerator():
                 cam_follow = False
 
             self.generate_camera(run_name=run_name, cam_pos=cam_positions[i, :], cam_rot=cam_rotations[i, :], cam_nr=i,
-                                 render=render, save_frames=save_frames, steps=steps,
+                                 level=level, render=render, save_frames=save_frames, steps=steps,
                                  use_red_dot=use_red_dot, physics_steps_per_frame=physics_steps_per_frame,
                                  cam_follow=cam_follow, render_resolution_x=render_resolution_x,
                                  render_resolution_y=render_resolution_y, set_fov=set_fov)
@@ -123,10 +125,10 @@ class DatasetGenerator():
             config_update = {'real_time': False}
             cfg.update(config_update)
 
-        #if level:
+        # if level:
         #    cfg['level'] = level
         env = football_env.FootballEnv(cfg)
-        print('hi')
+        print('Generating Cam {}:'.format(cam_nr))
         if render:
             env.render()
         env.reset()
@@ -134,6 +136,7 @@ class DatasetGenerator():
         pos = 0
         try:
             for time in range(steps):
+                print('Progress: ', round((time/steps)*100), '%')
                 r = R.from_euler('xyz', cam_rot, degrees=True)
                 carot_quat = r.as_quat()
                 pos += 0.1
@@ -141,8 +144,8 @@ class DatasetGenerator():
 
                 if (cam_follow):
                     ball3d = self.procOut(cout=env._env._env.get_3d_ball_position(), size=[3, 1])
-                    env._env._env.set_camera_node_position(float(cam_pos[0]+ball3d[0]), float(cam_pos[1]+ball3d[1]),
-                                                           float(cam_pos[2]+ball3d[2]))
+                    env._env._env.set_camera_node_position(float(cam_pos[0] + ball3d[0]), float(cam_pos[1] + ball3d[1]),
+                                                           float(cam_pos[2] + ball3d[2]))
                 else:
                     env._env._env.set_camera_node_position(float(cam_pos[0]), float(cam_pos[1]), float(cam_pos[2]))
 
@@ -189,8 +192,8 @@ class DatasetGenerator():
                         r = 5
                         x = pixcoord0[0]
                         y = pixcoord0[1]
-                        leftUpPoint = (x-r, y-r)
-                        rightDownPoint = (x+r, y+r)
+                        leftUpPoint = (x - r, y - r)
+                        rightDownPoint = (x + r, y + r)
                         twoPointList = [leftUpPoint, rightDownPoint]
                         draw.ellipse(twoPointList, fill=(255, 0, 0, 255))
                         _frame = np.array(img)

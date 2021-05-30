@@ -21,6 +21,9 @@ dg = DatasetGenerator.DatasetGenerator()
         run_name : Name of the run, a directory with the data will be generated.
         cam_positions : Nx3 array containing the positions of N different cameras.
         cam_rotations: Nx3 array containing the rotation (xyz Euler angles) of N different cameras.
+        level: what deterministic scenario should be used. Options can be found in football/gfootball/scenarios/test .
+        IMPORTANT: if you want to use a scenario that does not have the ending '_deterministic', open the scenario file
+        and insure that the flag 'builder.config().deterministic' is set to True!
         steps : Amount of steps the simulation should make
         render : if true the pygame window will appear and render the game (slower)
         save_frames : if true the frames of the game will be saved
@@ -35,6 +38,7 @@ dg = DatasetGenerator.DatasetGenerator()
 dg.generate_dataset('test_run2',
                     camera_positions,
                     camera_rotations,
+                    level='tests.11_vs_11_deterministic',  # read instructions above before changing!
                     steps=100,
                     save_frames=True,
                     write_video=True,
