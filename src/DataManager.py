@@ -14,6 +14,7 @@ class DataManager:
         self.constants = {}  # dict
         self.data = [{}]  # list of dicts
         self.frames = {}  # dict of lists
+        self.rng = None
 
     def set_extrinsic_mat(self, time: int, mat: np.ndarray, cam=0):
         if mat.shape != (3, 4) and mat.shape != (4, 4):
@@ -73,7 +74,8 @@ class DataManager:
         else:
             raise IndexError('Parameter time out of bounds. Please populate in order.')
 
-    def set_cam(self, time, extrinsic_mat, cam_node_pos, cam_node_orientation, cam_orientation, pix_ball_pos, oob_flag, cam):
+    def set_cam(self, time, extrinsic_mat, cam_node_pos, cam_node_orientation, cam_orientation, pix_ball_pos, oob_flag,
+                cam):
         self.set_extrinsic_mat(time, extrinsic_mat, cam)
         self.set_cam_node_pos(time, cam_node_pos, cam)
         self.set_cam_node_orientation(time, cam_node_orientation, cam)
@@ -122,7 +124,6 @@ class DataManager:
         self.load_data(run_name)
         self.load_constants(run_name)
 
-
         for cam in range(self.constants['amount_of_cams']):
             cam_dir = 'cam_' + str(cam)
             filename = 'xy.csv'
@@ -131,7 +132,6 @@ class DataManager:
                 xy_writer = csv.writer(xy_file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
                 xy_writer.writerows(self.get_points_2d(cam))
-        
 
     def load_constants(self, run_name):
         filename = run_name + '_constants.p'
@@ -139,6 +139,13 @@ class DataManager:
         with open(path, 'rb') as f:
             self.constants = pickle.load(f)
         return self.constants
+
+    def get_intrinsic_mat(self):
+        return self.constants['intrinsic_mat']
+
+    def get_intrinsic_mat_noise(self, std=0.1, seed=None):
+        intrinsic_mat = self.get_intrinsic_mat()
+        return np.multiply(intrinsic_mat, self._gen_noise(intrinsic_mat.shape, mean=1, std=std, seed=seed))
 
     def load(self, run_name):
         return self.load_data(run_name), self.load_constants(run_name)
@@ -178,13 +185,16 @@ class DataManager:
         else:
             return np.array([d['cam' + str(cam_num) + '_pix_ball_pos'] for d in self.data]).reshape(-1, 2)
 
-    def get_points_2d_noise(self, cam_num, set_oob_nan=False, std=1):
+    def get_points_2d_noise(self, cam_num, set_oob_nan=False, std=1, seed=None):
         points = self.get_points_2d(cam_num, set_oob_nan=set_oob_nan)
-        noise = np.random.normal(0, std, len(points.flatten()))
-        return points + noise.reshape(points.shape)
+        return points + self._gen_noise(points.shape, std=std, seed=seed)
 
     def get_ext_mat(self, cam_num):
         return np.array([d['cam' + str(cam_num) + '_extrinsic_mat'] for d in self.data])
+
+    def get_ext_mat_noise(self, cam_num, std=0.1, seed=None):
+        ext_mat = self.get_ext_mat(cam_num)
+        return np.multiply(ext_mat, self._gen_noise(ext_mat.shape, mean=1, std=std, seed=seed))
 
     def get_points_3d(self):
         return np.array([d['3d_ball_pos'] for d in self.data]).reshape(-1, 3)
@@ -193,11 +203,18 @@ class DataManager:
         k = np.array(self.constants['intrinsic_mat'])
         return np.array([(k @ self.get_ext_mat(cam)) for cam in range(self.constants['amount_of_cams'])])
 
-    def get_points_2d_all(self, set_oob_nan = False):
-        return np.array([self.get_points_2d(cam, set_oob_nan=set_oob_nan) for cam in range(self.constants['amount_of_cams'])])
+    def get_proj_mat_noise_all(self, intrinsic_std=0.05, extrinsic_std=0.1, seed=None):
+        K = np.array(self.get_intrinsic_mat_noise(std=intrinsic_std, seed=seed))
+        return np.array([K @ self.get_ext_mat_noise(cam, std=extrinsic_std, seed=seed)
+                         for cam in range(self.constants['amount_of_cams'])])
 
-    def get_points_2d_noise_all(self, set_oob_nan=False, std=1):
-        return np.array([self.get_points_2d_noise(cam, set_oob_nan=set_oob_nan, std=std) for cam in range(self.constants['amount_of_cams'])])
+    def get_points_2d_all(self, set_oob_nan=False):
+        return np.array(
+            [self.get_points_2d(cam, set_oob_nan=set_oob_nan) for cam in range(self.constants['amount_of_cams'])])
+
+    def get_points_2d_noise_all(self, set_oob_nan=False, std=1, seed=None):
+        return np.array([self.get_points_2d_noise(cam, set_oob_nan=set_oob_nan, std=std, seed=seed) for cam in
+                         range(self.constants['amount_of_cams'])])
 
     def get_oob_flags(self, cam_num):
         return np.array([d['cam' + str(cam_num) + '_oob_flag'] for d in self.data])
@@ -205,4 +222,7 @@ class DataManager:
     def get_oob_flags_all(self):
         return np.array([self.get_oob_flags(cam) for cam in range(self.constants['amount_of_cams'])])
 
-
+    def _gen_noise(self, shape, mean=0, std=1.0, seed=None):
+        if not self.rng:
+            self.rng = np.random.default_rng(seed)
+        return self.rng.normal(mean, std, size=shape)
