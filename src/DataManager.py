@@ -235,3 +235,29 @@ class DataManager:
         if not self.rng:
             self.rng = np.random.default_rng(seed)
         return self.rng.normal(mean, std, size=shape)
+
+    def get_3d_player_positions(self):
+        amount_players = self.dump[0]['observation']['left_team'].shape[0]
+        left_team = np.array([np.concatenate((step['observation']['left_team'], np.ones((amount_players,1))),axis=1) for step in self.dump])
+        right_team = np.array([np.concatenate((step['observation']['right_team'], np.ones((amount_players,1))),axis=1) for step in self.dump])
+        full_team = np.concatenate((left_team,right_team), axis=1)
+        full_team[:,:,0] = full_team[:,:,0]*55
+        full_team[:,:,1] = (full_team[:,:,1]/0.42) *36
+        return full_team
+
+    def get_2d_player_position(self, cam_nr):
+        proj_mat = self.get_proj_mat_all()[cam_nr]
+        team_3d = self.get_3d_player_positions()
+        steps = team_3d.shape[0]
+        players = team_3d.shape[1]
+        players_2d = np.zeros((steps,players,2))
+        for step in range(steps):
+            proj_mat_cur = proj_mat[step]
+            for player in range(players):
+                cur_player = team_3d[step,player,:]
+                cur_player = np.concatenate((cur_player, np.array([1])))
+                point_2d = proj_mat_cur @ cur_player
+                point_2d /= point_2d[2]
+                players_2d[step,player,:] = point_2d[:2]
+
+        return players_2d

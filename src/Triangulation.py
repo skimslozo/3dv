@@ -18,9 +18,11 @@ from src.TrajectoryEstimation import interpolate_3d
 
 datamanager = DataManager()
 
-data, constants, dump = datamanager.load('test_run3')
+data, constants, dump = datamanager.load('test_run4')
 proj_mat_all = datamanager.get_proj_mat_all()
 points_2d_all = datamanager.get_points_2d_all(set_oob_nan=True)
+players_3d = datamanager.get_3d_player_positions()
+players_2d = datamanager.get_2d_player_position(1)
 points_2d_noise_all = datamanager.get_points_2d_noise_all(set_oob_nan=True, std=10)
 oob_flags_all = datamanager.get_oob_flags_all()
 
