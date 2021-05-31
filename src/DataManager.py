@@ -5,7 +5,7 @@ import pickle
 from PIL import Image
 import cv2
 import os
-
+from numpy import array
 import csv
 
 
@@ -14,6 +14,7 @@ class DataManager:
         self.constants = {}  # dict
         self.data = [{}]  # list of dicts
         self.frames = {}  # dict of lists
+        self.dump = [] #list
         self.rng = None
 
     def set_extrinsic_mat(self, time: int, mat: np.ndarray, cam=0):
@@ -140,6 +141,14 @@ class DataManager:
             self.constants = pickle.load(f)
         return self.constants
 
+    def load_dump(self, run_name):
+        filename = run_name + '_dump.txt'
+        path = Path.cwd().parent / 'football_data' / run_name / filename
+        with open(path, 'r') as file:
+            dump = file.read().replace('\n', '')
+        self.dump = eval(dump)
+        return self.dump
+
     def get_intrinsic_mat(self):
         return self.constants['intrinsic_mat']
 
@@ -148,7 +157,7 @@ class DataManager:
         return np.multiply(intrinsic_mat, self._gen_noise(intrinsic_mat.shape, mean=1, std=std, seed=seed))
 
     def load(self, run_name):
-        return self.load_data(run_name), self.load_constants(run_name)
+        return self.load_data(run_name), self.load_constants(run_name), self.load_dump(run_name)
 
     def load_frame(self, time, dirname, cam):
         cam_dir = 'cam_' + str(cam)

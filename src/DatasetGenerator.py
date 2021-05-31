@@ -17,15 +17,19 @@ from __future__ import division
 from __future__ import print_function
 
 from absl import logging
+import glob
 
 from gfootball.env import config
 from gfootball.env import football_env
+from gfootball.env import script_helpers
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from numpy import array
 
 from PIL import Image, ImageDraw
 
 from DataManager import DataManager
+from pathlib import Path
 
 
 class DatasetGenerator():
@@ -83,6 +87,16 @@ class DatasetGenerator():
 
         self.data_manager.write_data(run_name)
         self.data_manager.write_constants(run_name)
+
+
+        run_path = Path.cwd().parent / 'football_data' / run_name
+        dump_path = run_path/ '*.dump'
+        dump_path_file = glob.glob(dump_path.as_posix())[0]
+        script_helpers.ScriptHelpers().dump_to_txt(dump_path_file, run_path / (run_name +'_dump.txt'), False)
+
+
+        print('END')
+
         if write_video:
             for cam in range(N):
                 self.data_manager.write_video(run_name, cam)
@@ -107,11 +121,19 @@ class DatasetGenerator():
                         set_fov=24):
 
         players = ''
+        dump_full_episodes = False
+        tracesdir = '/tmp/dumps'
+        if cam_nr == 0:
+            dump_full_episodes = True
+            tracesdir = Path.cwd().parent / 'football_data' / run_name
+            tracesdir.mkdir(parents=True, exist_ok=True)
+
         assert not (any(['agent' in player for player in players])
                     ), ('Player type \'agent\' can not be used with play_game.')
         cfg = config.Config({
             'action_set': 'default',
-            'dump_full_episodes': True,
+            'dump_full_episodes': dump_full_episodes,
+            'tracesdir': tracesdir,
             'players': players,
             'real_time': True,
             'game_engine_random_seed': 42,
@@ -202,11 +224,16 @@ class DatasetGenerator():
                 time += 1
 
                 if done:
+                    '''
+                    if cam_nr == 0:
+                        dump_name = 'datagen_' + run_name  # DO NOT CHANGE THIS 'datagen' MUST be the first 7 letters
+                        env.write_dump(dump_name)
+                    '''
                     env.reset()
             # end for
 
 
         except KeyboardInterrupt:
             logging.warning('Game stopped, writing dump...')
-            env.write_dump('shutdown')
+
             exit(1)
