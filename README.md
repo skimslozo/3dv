@@ -19,6 +19,7 @@
 * [Hand Label Pictures](https://github.com/qaprosoft/labelImg)
 * [Final Paper Outline](https://docs.google.com/document/d/186wmasgGrZnZuw9eYNlKpqqP2u3gKj774uPydnajW0o/edit?usp=sharing)
 * [Final Paper Overleaf](https://www.overleaf.com/project/60a10867b143f70445357d6f)
+* [Final Presentation](https://docs.google.com/presentation/d/1BE0HA_Y6XRBG14XwHTo9m5vSwsqMllhRKUUvcAC5g6w/edit#slide=id.gdd7fd61593_0_0)
 
 To set up google football simulation go to https://github.com/google-research/football
 
