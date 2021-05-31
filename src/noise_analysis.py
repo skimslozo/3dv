@@ -15,16 +15,16 @@ import matplotlib.pyplot as plt
 
 datamanager = DataManager()
 
-cam_swap_indices = [2, 3, 4, 5, 6, 7, 8, 9, 0, 1]
+# cam_swap_indices = [2, 3, 4, 5, 6, 7, 8, 9, 0, 1]
 
 data, constants = datamanager.load('run_mari')
 proj_mat_all = datamanager.get_proj_mat_all()
 # proj_mat_all[cam_swap_indices, :, :, :] = proj_mat_all
-proj_mat_all_noise = datamanager.get_proj_mat_noise_all(intrinsic_std=0.00, extrinsic_std=0.01, seed=1724)
+proj_mat_all_noise = datamanager.get_proj_mat_noise_all(intrinsic_std=0.00, extrinsic_std=0.00, seed=17)
 # proj_mat_all_noise[cam_swap_indices, :, :, :] = proj_mat_all_noise
 points_2d_all = datamanager.get_points_2d_all(set_oob_nan=True)
 # points_2d_all[cam_swap_indices, :, :] = points_2d_all
-points_2d_noise_all = datamanager.get_points_2d_noise_all(set_oob_nan=True, std=10, seed=1724)
+points_2d_noise_all = datamanager.get_points_2d_noise_all(set_oob_nan=True, std=20, seed=17)
 # points_2d_noise_all[cam_swap_indices, :, :] = points_2d_noise_all
 oob_flags_all = datamanager.get_oob_flags_all()
 # oob_flags_all[cam_swap_indices, :] = oob_flags_all
@@ -35,7 +35,7 @@ points_3d_gt = datamanager.get_points_3d()
 points_3d_tv = tri_tv(proj_mat_all_noise[0], proj_mat_all_noise[1], points_2d_noise_all[0], points_2d_noise_all[1])
 estimator_tv = EstimationMetrics(points_3d_gt, points_3d_tv)
 
-metrics = np.zeros((amount_cam-1, 2))
+metrics = np.zeros((amount_cam-1, 3))
 for num_cams in range(2, amount_cam+1):
     points_3d_noise_nlr = tri_nlr(proj_mat_all_noise[0:num_cams, :, :, :],
                                   points_2d_noise_all[0:num_cams, :, :],
@@ -43,26 +43,29 @@ for num_cams in range(2, amount_cam+1):
     estimator_nlr = EstimationMetrics(points_3d_gt, points_3d_noise_nlr)
     metrics[num_cams-2, 0] = estimator_nlr.largest_difference()
     metrics[num_cams-2, 1] = estimator_nlr.euclidean_distance_sum()
+    metrics[num_cams-2, 2] = estimator_nlr.root_mean_squared_error()
 
-metrics_df = pd.DataFrame(data=metrics, columns=['Largest Difference', 'Sum of Distances'])
+metrics_df = pd.DataFrame(data=metrics, columns=['Largest Difference', 'Sum of Distances', 'RMSE'])
 
 largest_diff_tv = estimator_tv.largest_difference()
 sum_diffs_tv = estimator_tv.euclidean_distance_sum()
+rmse_tv = estimator_tv.root_mean_squared_error()
 
-fig, axs = plt.subplots(1, 2)
+fig, axs = plt.subplots(2, 1)
 fig.suptitle('Impact of Noise vs. Multiple Cameras')
 # plt.plot(range(2, 2+len(metrics_df)), metrics_df['Largest Difference'])
-axs[0].plot(range(2, 2+len(metrics_df)), metrics_df['Sum of Distances'])
-axs[0].plot([2, 1+len(metrics_df)], [sum_diffs_tv, sum_diffs_tv], '--')
-axs[0].legend(['Sum of Distances', 'Two view reference'])
-axs[0].set_title('Sum of Distances')
-axs[0].set(xlabel='Number of Cameras', ylabel='Sum of Euclidean Distances')
-
-axs[1].plot(range(2, 2+len(metrics_df)), metrics_df['Largest Difference'])
-axs[1].plot([2, 1+len(metrics_df)], [largest_diff_tv, largest_diff_tv], '--')
-axs[1].legend(['Largest Error', 'Two view reference'])
-axs[1].set_title('Largest Error')
-axs[1].set(xlabel='Number of Cameras', ylabel='Largest Error')
+axs[0].plot(range(2, 2+len(metrics_df)), metrics_df['RMSE'])
+axs[0].plot([2, 1+len(metrics_df)], [max(metrics_df['RMSE']), max(metrics_df['RMSE'])], '--')
+axs[0].set_ylim(0, rmse_tv*1.1)
+axs[0].legend(['Root Mean Squared Error', 'Two view reference'])
+axs[0].set_title('Effect of gaussian noise on 2D ball positions')
+axs[0].set(xlabel='Number of Cameras', ylabel='Root Mean Squared Error')
+#
+# axs[1].plot(range(2, 2+len(metrics_df)), metrics_df['Largest Difference'])
+# axs[1].plot([2, 1+len(metrics_df)], [largest_diff_tv, largest_diff_tv], '--')
+# axs[1].legend(['Largest Error', 'Two view reference'])
+# axs[1].set_title('Largest Error')
+# axs[1].set(xlabel='Number of Cameras', ylabel='Largest Error')
 plt.show()
 
 visualizer = SoccerVisualizer()

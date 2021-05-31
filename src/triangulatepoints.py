@@ -87,7 +87,7 @@ def triangulate_points_nonlinear_refinement(proj_mat_all, points_2d_all, oob_fla
 
         ls = least_squares(tri_residual, initial_guess_3d, method=cur_method, max_nfev=10000, kwargs={'proj_mat_all': cur_proj_mat_all,
                                                                                 'point_2d_all': cur_points_2d_all,
-                                                                                'amount_cam': cur_amount_cam})
+                                                                                'amount_cam': cur_amount_cam}) # loss = 'cauchy'
         points_3d[step] = ls.x
 
     return points_3d
