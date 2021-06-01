@@ -242,7 +242,7 @@ class DataManager:
         right_team = np.array([np.concatenate((step['observation']['right_team'], np.ones((amount_players,1))),axis=1) for step in self.dump])
         full_team = np.concatenate((left_team,right_team), axis=1)
         full_team[:,:,0] = full_team[:,:,0]*55
-        full_team[:,:,1] = (full_team[:,:,1]/0.42) *36
+        full_team[:,:,1] = (full_team[:,:,1]/0.42) *(-36)
         return full_team
 
     def get_2d_player_position(self, cam_nr):
