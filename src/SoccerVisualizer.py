@@ -45,7 +45,7 @@ class SoccerVisualizer():
         '''
         Draw Soccer Field for reference [IMAGE VERSION]
         '''
-        field = cv2.imread('src/field.png')[13:394,27:613,0]
+        field = cv2.imread('field.png')[13:394,27:613,0]
         field[field>0] = 255
         field_size = np.shape(field)
         football_field = visuals.Image(data = field[:,:].T, parent = self.view.scene, cmap='grays')

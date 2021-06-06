@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 from scipy.optimize import least_squares
+import itertools
 
 
 def triangulate_points_two_views(projmat0, projmat1, points_2d_0, points_2d_1):
@@ -89,5 +90,24 @@ def triangulate_points_nonlinear_refinement(proj_mat_all, points_2d_all, oob_fla
                                                                                 'point_2d_all': cur_points_2d_all,
                                                                                 'amount_cam': cur_amount_cam}) # loss = 'cauchy'
         points_3d[step] = ls.x
+
+    return points_3d
+
+
+def triangulate_pairwise(proj_mat_all, points_2d_all, method='mean'):
+    num_cams = proj_mat_all.shape[0]
+    num_points = proj_mat_all.shape[1]
+    num_pairs = int(num_cams*(num_cams-1)/2)
+    triangulated = np.zeros((num_pairs, num_points, 3))
+    for i, cam_pair in enumerate(itertools.combinations(range(num_cams), 2)):
+        triangulated[i, :, :] = triangulate_points_two_views(proj_mat_all[cam_pair[0]], proj_mat_all[cam_pair[1]],
+                                                 points_2d_all[cam_pair[0]], points_2d_all[cam_pair[1]])
+
+    if method == 'mean':
+        points_3d = np.nanmean(triangulated, axis=0)
+    elif method == 'median':
+        points_3d = np.nanmedian(triangulated, axis=0)
+    else:
+        raise ValueError(f'Unknown method: {method}')
 
     return points_3d
