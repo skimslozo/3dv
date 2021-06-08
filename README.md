@@ -57,3 +57,10 @@ for the dataset.
 | render_resolution_x     | 1280                            | Height of the rendered frame                                                                                                                                                                                                                                                                       |
 | render_resolution_y     | 720                             | Width of the rendered frame                                                                                                                                                                                                                                                                        |
 | set_fov                 | 24                              | Changes the field of view for all cameras.                                                                                                                                                                                                                                                         |
+
+
+
+
+## File Struture
+- football/ containts a hard fork from https://github.com/google-research/football with major changes
+- src/ contains the dataset generator
