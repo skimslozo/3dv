@@ -9,7 +9,4 @@ matplotlib==3.4.1
 opencv-python==4.5.1.48
 scipy==1.6.3
 
-# to install the hard fork of gfootball 
-
-# 1. cd football
-# 2. pip3 install .
+# to install the hard fork of gfootball follow the readme in the football folder
