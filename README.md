@@ -63,4 +63,4 @@ for the dataset.
 
 ## File Struture
 - football/ containts a hard fork from https://github.com/google-research/football with major changes
-- src/ contains the dataset generator
+- src/ contains the dataset generator and the rest of the pipeline
