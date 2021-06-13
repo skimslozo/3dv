@@ -119,7 +119,7 @@ matrix, the extrinsic matrix and the projection matrix.
   3. EstimationMetric.py consists several estimation metrics
   4. SoccerVisualizer.py to visualize football field and trajectory
   5. TrajectoryEstimation.py estimatior for trajectory
-  6. Triangulation.py Example of Triangulation on dataset 'test_run2'
+  6. Explore_Dataset.py Example of Triangulation on dataset 'test_run2'
   7. camera_positions.csv contains camera position for datagen.py
   8. camera_orientation.csv contains camera orientation for datagen.py
   9. datagen.py to generate data. Entry Point
