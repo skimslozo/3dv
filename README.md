@@ -65,7 +65,7 @@ This command can run for a couple of minutes, as it compiles the C++ environment
 #### 3. Generate Data
 
 ```
-cd src
+cd src/
 python3 datagen.py
 ```
 
