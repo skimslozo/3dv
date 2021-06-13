@@ -37,9 +37,6 @@ pip3 install -r requirements.txt
 to install the visualizer and data generator
 
 
-To install football simulator follow the readme on https://github.com/google-research/football
-
-However, here is a short summary
 
 #### 2. Install required packages for football simulator
 ```
