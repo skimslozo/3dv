@@ -110,6 +110,18 @@ datamanager.get_proj_mat_all() function which will return an MxNx3x4 array, cont
 the projection matrix for you. Further the DataManager is able to add noise to the pixel coordinates, the intrinsic 
 matrix, the extrinsic matrix and the projection matrix. 
 
+| Function                | Input                                                       | Output                                                                                                                                                                                                         |
+|-------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| load                    | str, Name of the run                                        | Must be run first! Loads the runs data internally for the object. returns data, constants and dump file contents in Dictionaries                                                                               |
+| get_proj_mat_all        | -                                                           | Returns an MxNx3x4 matrix containing projection Matrices of the shape 3x4 , where M is the number of cameras and N is the amount of steps.                                                                     |
+| get_proj_mat_noise_all  | (float, intrinsic std), (float, extrinsic std) (int, seed)  | Same as get_proj_mat_all, but with added gaussian noise.                                                                                                                                                       |
+| get_points_2d_all       | boolean, set_oob_nan                                        | Returns a MxNx2 matrix containing 2d pixel positions of the ball for each frame n and each camera m, if set_bool_nan is set to 'True' it will set the values to NAN where the ball is not in the cameras frame |
+| get_points_2d_noise_all | (boolean, set_oob_nan) (float, std) (int, seed)             | Same as above, but with added gaussian noise                                                                                                                                                                   |
+| get_oob_flags_all       | -                                                           | Returns a MxN matrix, containing boolean flags for M cameras and N time steps. If True, the ball is out of frame at that time ste                                                                              |
+| get_points_3d           | -                                                           | Returns a Nx3 matrix, containing the 3d position of the ball at each time step n.                                                                                                                              |
+| get_3d_player_positions | -                                                           | Returns a NxPx3 matrix containing the 3D positions of P players and N timesteps.                                                                                                                               |
+| get_2d_player_position  | int, camera number                                          | Returns a NxPx3 matrix containing the 2D pixel positions of all P players at N timesteps.                                                                                                                      |
+
 
 ## File Struture
 - football/ containts a hard fork from https://github.com/google-research/football with major changes
