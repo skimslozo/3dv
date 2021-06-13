@@ -110,6 +110,10 @@ datamanager.get_proj_mat_all() function which will return an MxNx3x4 array, cont
 the projection matrix for you. Further the DataManager is able to add noise to the pixel coordinates, the intrinsic 
 matrix, the extrinsic matrix and the projection matrix. 
 
+Below is a table describing the most important functions that the Datamanger provides. There are more to be found in the 
+DataManager class. Further one could easily add more for something like eg. Ball spin by following the format of the
+other getter methods.
+
 | Function                | Input                                                       | Output                                                                                                                                                                                                         |
 |-------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | load                    | str, Name of the run                                        | Must be run first! Loads the runs data internally for the object. returns data, constants and dump file contents in Dictionaries                                                                               |
