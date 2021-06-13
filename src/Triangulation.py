@@ -21,9 +21,13 @@ from src.TrajectoryEstimation import interpolate_3d
 manipulate them to eg. add noise to 2d pixel coordinates'''
 datamanager = DataManager()
 
+
 data, constants = datamanager.load('test_run2')  # change name here to the desired dataset
+
 proj_mat_all = datamanager.get_proj_mat_all()
 points_2d_all = datamanager.get_points_2d_all(set_oob_nan=True)
+players_3d = datamanager.get_3d_player_positions()
+players_2d = datamanager.get_2d_player_position(1)
 points_2d_noise_all = datamanager.get_points_2d_noise_all(set_oob_nan=True, std=10)
 oob_flags_all = datamanager.get_oob_flags_all()
 

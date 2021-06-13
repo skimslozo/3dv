@@ -5,7 +5,7 @@ import pickle
 from PIL import Image
 import cv2
 import os
-
+from numpy import array
 import csv
 
 
@@ -14,6 +14,7 @@ class DataManager:
         self.constants = {}  # dict
         self.data = [{}]  # list of dicts
         self.frames = {}  # dict of lists
+        self.dump = [] #list
         self.rng = None
 
     def set_extrinsic_mat(self, time: int, mat: np.ndarray, cam=0):
@@ -140,6 +141,14 @@ class DataManager:
             self.constants = pickle.load(f)
         return self.constants
 
+    def load_dump(self, run_name):
+        filename = run_name + '_dump.txt'
+        path = Path.cwd().parent / 'football_data' / run_name / filename
+        with open(path, 'r') as file:
+            dump = file.read().replace('\n', '')
+        self.dump = eval(dump)
+        return self.dump
+
     def get_intrinsic_mat(self):
         return self.constants['intrinsic_mat']
 
@@ -148,7 +157,7 @@ class DataManager:
         return np.multiply(intrinsic_mat, self._gen_noise(intrinsic_mat.shape, mean=1, std=std, seed=seed))
 
     def load(self, run_name):
-        return self.load_data(run_name), self.load_constants(run_name)
+        return self.load_data(run_name), self.load_constants(run_name), self.load_dump(run_name)
 
     def load_frame(self, time, dirname, cam):
         cam_dir = 'cam_' + str(cam)
@@ -226,3 +235,29 @@ class DataManager:
         if not self.rng:
             self.rng = np.random.default_rng(seed)
         return self.rng.normal(mean, std, size=shape)
+
+    def get_3d_player_positions(self):
+        amount_players = self.dump[0]['observation']['left_team'].shape[0]
+        left_team = np.array([np.concatenate((step['observation']['left_team'], np.ones((amount_players,1))),axis=1) for step in self.dump])
+        right_team = np.array([np.concatenate((step['observation']['right_team'], np.ones((amount_players,1))),axis=1) for step in self.dump])
+        full_team = np.concatenate((left_team,right_team), axis=1)
+        full_team[:,:,0] = full_team[:,:,0]*55
+        full_team[:,:,1] = (full_team[:,:,1]/0.42) *(-36)
+        return full_team
+
+    def get_2d_player_position(self, cam_nr):
+        proj_mat = self.get_proj_mat_all()[cam_nr]
+        team_3d = self.get_3d_player_positions()
+        steps = team_3d.shape[0]
+        players = team_3d.shape[1]
+        players_2d = np.zeros((steps,players,2))
+        for step in range(steps):
+            proj_mat_cur = proj_mat[step]
+            for player in range(players):
+                cur_player = team_3d[step,player,:]
+                cur_player = np.concatenate((cur_player, np.array([1])))
+                point_2d = proj_mat_cur @ cur_player
+                point_2d /= point_2d[2]
+                players_2d[step,player,:] = point_2d[:2]
+
+        return players_2d
