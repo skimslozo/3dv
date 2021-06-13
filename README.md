@@ -69,6 +69,7 @@ python3 datagen.py
 
 
 ## Instructions
+### Dataset Generation
 To generate a dataset navigate into the '/football' directory where there is a file called 'datagen.py'. 
 The script in 'datagen.py', when run, will automatically generate a dataset in a folder contained in this repository's 
 root folder called 'football_data'. 
@@ -94,13 +95,20 @@ for the dataset.
 | save_frames             | True                            | If true, the frames of the game will be saved.                                                                                                                                                                                                                                                     |
 | write_video             | False                           | If true, a video will be made from the frames. ('save_frames' need to be True)                                                                                                                                                                                                                     |
 | use_red_dot             | False                           | If true, a red dot will be rendered on each frame to highlight the ball.                                                                                                                                                                                                                           |
-| physics_steps_per_frame | 10                              | Changes the "frame rate", lower value means higher frame rate (not tested for values < 1)                                                                                                                                                                                                          |
+| physics_steps_per_frame | 1                               | Changes the "frame rate", lower value means higher frame rate (not tested for values < 1) (only 1 will give perfectly accurate 2D pixel positions)                                                                                                                                                 |
 | amount_cam_follow       | 0                               | Integer, amount of cameras that should follow the ball, starting from the first.                                                                                                                                                                                                                   |
 | render_resolution_x     | 1280                            | Height of the rendered frame                                                                                                                                                                                                                                                                       |
 | render_resolution_y     | 720                             | Width of the rendered frame                                                                                                                                                                                                                                                                        |
 | set_fov                 | 24                              | Changes the field of view for all cameras.                                                                                                                                                                                                                                                         |
 
-
+### Working with the Dataset
+The easiest way to work with this data is to use our DataManager class. With it one can load in the data with 
+ease and is given many getter and data modification methods to work with. The getter methods returns the data in a way 
+that makes it easy to work with it in an efficient vectorized manner. An example of this is the 
+datamanager.get_proj_mat_all() function which will return an MxNx3x4 array, containing projection Matrices of the shape 
+3x4 , where M is the number of cameras and N is the amount of steps. Here the DataManager internally already calculated 
+the projection matrix for you. Further the DataManager is able to add noise to the pixel coordinates, the intrinsic 
+matrix, the extrinsic matrix and the projection matrix. 
 
 
 ## File Struture
