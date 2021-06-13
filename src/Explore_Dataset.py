@@ -22,7 +22,7 @@ manipulate them to eg. add noise to 2d pixel coordinates'''
 datamanager = DataManager()
 
 
-data, constants = datamanager.load('test_run2')  # change name here to the desired dataset
+data, constants, dump = datamanager.load('test_run2')  # change name here to the desired dataset
 
 proj_mat_all = datamanager.get_proj_mat_all()
 points_2d_all = datamanager.get_points_2d_all(set_oob_nan=True)
