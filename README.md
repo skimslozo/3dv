@@ -26,6 +26,51 @@ To set up google football simulation go to https://github.com/google-research/fo
 ## Project Managment 
 In general, for every task do a github issue
 
+## Quick Start 
+
+tested on ubuntu 20.04
+
+#### 1. Install required packages
+```
+pip3 install -r requirements.txt
+```
+to install the visualizer and data generator
+
+
+To install football simulator follow the readme on https://github.com/google-research/football
+
+However, here is a short summary
+
+#### 2. Install required packages for football simulator
+```
+sudo apt-get install git cmake build-essential libgl1-mesa-dev libsdl2-dev \
+libsdl2-image-dev libsdl2-ttf-dev libsdl2-gfx-dev libboost-all-dev \
+libdirectfb-dev libst-dev mesa-utils xvfb x11vnc libsdl-sge-dev python3-pip
+```
+
+#### 3. Installing from source
+
+```
+cd football
+```
+
+
+The last step is to build the environment:
+
+```
+pip3 install .
+```
+This command can run for a couple of minutes, as it compiles the C++ environment in the background.
+
+#### 3. Generate Data
+
+```
+cd src
+python3 datagen.py
+```
+
+
+
 ## Instructions
 To generate a dataset navigate into the '/football' directory where there is a file called 'datagen.py'. 
 The script in 'datagen.py', when run, will automatically generate a dataset in a folder contained in this repository's 
@@ -79,3 +124,6 @@ for the dataset.
   13. test_DataManager.py tester for data manager
   14. triangulate_handlabeled.py visiualize the hand-labeled data
   15. triangulatepoints.py contains method to triangulate points based on camera parameters
+- img/ general image fro illustration and report
+- data/ data used for report
+  1. 
