@@ -29,21 +29,22 @@ dg = DatasetGenerator.DatasetGenerator()
         save_frames : if true the frames of the game will be saved
         write_video : if true a video will be made from the frames, should only be true when save_frames is true
         use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
-        physics_steps_per_frame: 10 (Default). only tested with physics_steps_per_frame=1.
+        physics_steps_per_frame: 1 (Default). only tested with physics_steps_per_frame=1, higher values work but the 
+        2d pixel positions wont be perfect. 
         amount_cam_follow: amount of cameras that should follow the ball, starting from the first.
         render_resolution_x: Height of the rendered frame20Brains-Gan356#
         render_resolution_y: Width of the rendered frame
         set_fov: Changes the field of view of all cameras
 """
-dg.generate_dataset('test_run2',
+dg.generate_dataset('test_run',
                     camera_positions,
                     camera_rotations,
                     level='tests.11_vs_11_deterministic',  # read instructions above before changing!
-                    steps=100,
+                    steps=300,
                     save_frames=True,
                     write_video=True,
                     use_red_dot=False,
-                    physics_steps_per_frame=10,
+                    physics_steps_per_frame=1,
                     amount_cam_follow=1,
                     set_fov=24,
                     render_resolution_x=1920,
