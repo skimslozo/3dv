@@ -126,6 +126,9 @@ other getter methods.
 | get_3d_player_positions | -                                                           | Returns a NxPx3 matrix containing the 3D positions of P players and N timesteps.                                                                                                                               |
 | get_2d_player_position  | int, camera number                                          | Returns a NxPx3 matrix containing the 2D pixel positions of all P players at N timesteps.                                                                                                                      |
 
+Explore_Dataset.py is an example file of how to work with the various classes provided as a pipeline. It can also be 
+adapted to suit your needs. In it, you can see how to work with our ErrorMetrics class, our Triangulation functions and
+our Visualizer.
 
 ## File Struture
 - football/ contains a hard fork from https://github.com/google-research/football with major changes
