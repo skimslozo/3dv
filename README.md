@@ -148,6 +148,7 @@ our Visualizer.
   13. test_DataManager.py tester for data manager
   14. triangulate_handlabeled.py visualize the hand-labeled data
   15. triangulatepoints.py contains method to triangulate points based on camera parameters
+  16. player_pos_visualization.py contains a script with which one can visualize the players on the filed with a red dot
 - img/ general image for illustration and report
 - data/ data used for report
   1. 
