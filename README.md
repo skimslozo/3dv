@@ -128,14 +128,14 @@ other getter methods.
 
 
 ## File Struture
-- football/ containts a hard fork from https://github.com/google-research/football with major changes
-- src/ contains the dataset generator and the rest of the pipeline
+- football/ contains a hard fork from https://github.com/google-research/football with major changes
+- src/ contains the dataset generator, and the rest of the pipeline
   1. DataManager.py saves all data
   2. DatasetGenerator.py activates the football/ folder
   3. EstimationMetric.py consists several estimation metrics
   4. SoccerVisualizer.py to visualize football field and trajectory
-  5. TrajectoryEstimation.py estimatior for trajectory
-  6. Explore_Dataset.py Example of Triangulation on dataset 'test_run2'
+  5. TrajectoryEstimation.py estimator for trajectory
+  6. Explore_Dataset.py Example of Triangulation and visualization on dataset 'test_run2'
   7. camera_positions.csv contains camera position for datagen.py
   8. camera_orientation.csv contains camera orientation for datagen.py
   9. datagen.py to generate data. Entry Point
@@ -143,8 +143,8 @@ other getter methods.
   11. hand_labeling.py tool to interpolate hand labeled data and also to go from video to frames
   12. noise_analysis.py noise vs multiple cameras based on dataset 'run_mari2'
   13. test_DataManager.py tester for data manager
-  14. triangulate_handlabeled.py visiualize the hand-labeled data
+  14. triangulate_handlabeled.py visualize the hand-labeled data
   15. triangulatepoints.py contains method to triangulate points based on camera parameters
-- img/ general image fro illustration and report
+- img/ general image for illustration and report
 - data/ data used for report
   1. 
