@@ -56,7 +56,8 @@ class DatasetGenerator():
         steps : amount of steps the simulation should make
         write_video : if true a video will be made from the frames, should only be true when save_frames is true
         use_red_dot: if True puts a red point in the frame where the ball is according to the pixel coordinates
-        physics_steps_per_frame: 10 (Default). only tested with physics_steps_per_frame=1.
+        physics_steps_per_frame: 1 (Default). only tested with physics_steps_per_frame=1, higher values work but the
+        2d pixel positions wont be perfect.
         amount_cam_follow: amount of cameras that should follow the ball, starting from the first.
         render_resolution_x: Height of the rendered frame
         render_resolution_y: Width of the rendered frame
@@ -117,7 +118,7 @@ class DatasetGenerator():
 
     def generate_camera(self, run_name, cam_nr=0, steps=100, cam_pos=np.array([0, 0, 80]), cam_rot=np.array([0, 0, 0]),
                         level='tests.11_vs_11_deterministic', render=True, save_frames=False, use_red_dot=False,
-                        physics_steps_per_frame=10, cam_follow=False, render_resolution_x=1280, render_resolution_y=720,
+                        physics_steps_per_frame=1, cam_follow=False, render_resolution_x=1280, render_resolution_y=720,
                         set_fov=24):
 
         players = ''

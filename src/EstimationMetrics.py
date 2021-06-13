@@ -16,6 +16,10 @@ class EstimationMetrics:
     def euclidean_distance(self):
         return np.linalg.norm(self.gt_points_3d - self.points_3d, axis=1)
 
+    def root_mean_squared_error(self):
+        # return self.euclidean_distance_sum()/len(self.points_3d)
+        return np.mean(np.linalg.norm(self.gt_points_3d-self.points_3d, axis=1))
+
     def euclidean_distance_sum(self):
         return np.sum(self.euclidean_distance())
 
