@@ -60,6 +60,7 @@ pip3 install .
 This command can run for a couple of minutes, as it compiles the C++ environment in the background.
 
 #### 3. Generate Data
+from the project root, this will generate a data set in a "football_data" folder in the projects root directory
 
 ```
 cd src/
