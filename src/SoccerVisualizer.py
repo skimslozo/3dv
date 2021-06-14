@@ -11,7 +11,7 @@ import time
 import cv2
 
 class SoccerVisualizer():
-    def __init__(self, camera_position=[-20, 50, 20]):
+    def __init__(self, camera_position=[0, 0, 0]):
         """ visualizer for a football game
 
         Args:
