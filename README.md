@@ -146,10 +146,9 @@ our Visualizer.
   10. field.png field used by visualizer
   11. hand_labeling.py tool to interpolate hand labeled data and also to go from video to frames
   12. noise_analysis.py noise vs multiple cameras based on dataset 'run_mari2'
-  13. test_DataManager.py tester for data manager
-  14. triangulate_handlabeled.py visualize the hand-labeled data
-  15. triangulatepoints.py contains method to triangulate points based on camera parameters
-  16. player_pos_visualization.py contains a script with which one can visualize the players on the filed with a red dot
+  13. triangulate_handlabeled.py visualize the hand-labeled data
+  14. triangulatepoints.py contains method to triangulate points based on camera parameters
+  15. player_pos_visualization.py contains a script with which one can visualize the players on the filed with a red dot
 - img/ general image for illustration and report
 - data/ data used for report
   1. 
