@@ -85,28 +85,28 @@ plt.rcParams.update({'font.size': 7,
                      })
 fig, axs = plt.subplots(3, 1, figsize=[3.3, 6])
 fig.suptitle('Impact of Noise vs. Multiple Cameras')
-for i in range(0, amount_cam-2):
+for i in range(0, amount_cam-1):
     axs[0].plot(stds, metrics_nlr[:, i, 2])
 
 axs[0].set_ylim(0, np.nanmax(metrics_nlr[:, :, 2])*1.1)
 axs[0].set_title('Nonlinear refinement')
-axs[0].legend([f'{n} cameras' for n in range(2, amount_cam)])
+axs[0].legend([f'{n} cameras' for n in range(2, amount_cam+1)])
 axs[0].set(xlabel='standard deviation [px]', ylabel='root mean squared error [m]')
 
-for i in range(0, amount_cam-2):
+for i in range(0, amount_cam-1):
     axs[1].plot(stds, metrics_pw[:, i, 2])
 
 axs[1].set_ylim(0, np.nanmax(metrics_pw[:, :, 2])*1.1)
 axs[1].set_title('Pairwise averaging with mean')
-axs[1].legend([f'{n} cameras' for n in range(2, amount_cam)])
+axs[1].legend([f'{n} cameras' for n in range(2, amount_cam+1)])
 axs[1].set(xlabel='standard deviation [px]', ylabel='root mean squared error [m]')
 
-for i in range(0, amount_cam-2):
+for i in range(0, amount_cam-1):
     axs[2].plot(stds, metrics_pw_med[:, i, 2])
 
 axs[2].set_ylim(0, np.nanmax(metrics_pw_med[:, :, 2])*1.1)
 axs[2].set_title('Pairwise averaging with median')
-axs[2].legend([f'{n} cameras' for n in range(2, amount_cam)])
+axs[2].legend([f'{n} cameras' for n in range(2, amount_cam+1)])
 axs[2].set(xlabel='standard deviation [px]', ylabel='root mean squared error [m]')
 fig.tight_layout()
 plt.show()
