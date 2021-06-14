@@ -28,7 +28,7 @@ In general, for every task do a github issue
 
 ## Quick Start 
 
-tested on ubuntu 20.04
+tested on ubuntu 20.04, Needs Python 3.7! 
 
 #### 1. Install required packages
 ```
