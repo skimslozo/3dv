@@ -36,7 +36,7 @@ dg = DatasetGenerator.DatasetGenerator()
         render_resolution_y: Width of the rendered frame
         set_fov: Changes the field of view of all cameras
 """
-dg.generate_dataset('test_run2',
+dg.generate_dataset('test_run',
                     camera_positions,
                     camera_rotations,
                     level='tests.11_vs_11_deterministic',  # read instructions above before changing!

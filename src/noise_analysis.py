@@ -19,7 +19,7 @@ datamanager = DataManager()
 # cam_swap_indices = [2, 3, 4, 5, 6, 7, 8, 9, 0, 1]
 stds = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, 1, 1.5, 2, 2.5, 3, 4, 5, 6, 7, 8, 9, 10]
 
-data, constants = datamanager.load('run_mari2')
+data, constants, _ = datamanager.load('test_run')
 proj_mat_all = datamanager.get_proj_mat_all()
 # proj_mat_all[cam_swap_indices, :, :, :] = proj_mat_all
 points_2d_all = datamanager.get_points_2d_all(set_oob_nan=True)
