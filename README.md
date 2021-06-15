@@ -5,24 +5,6 @@
 # 3D Vision Project: Soccer Ball Detection and Tracking
 ## Marian, Jason, Miks & Jannik
 
-### Important Links
-
-* [Google Docs with work packages](https://docs.google.com/document/d/1t3td3Fl85A2u-0nMh3fmjDndkqI4slvDTglgTJUZuDA/edit)
-* [Proposal Presentation](https://docs.google.com/presentation/d/1S16nQzCUljWjCPs96GXUtMhLLvK8xuvwSQWkcADmUa8/edit#slide=id.p)
-* [Project Proposal Outline](https://docs.google.com/document/d/17Tfdv_uZz8P1Bmt9VpqbMHXWcxzVBZuWPozLdoFZHRE/edit
-)
-* [Project Propsal: Latex](https://www.overleaf.com/project/60489a2f4a789faf8b9b6a97)
-* [Paper Presentation Slides](https://docs.google.com/presentation/d/1S3GxRsPdXZiqShj0OZToLz6usqU2533UunqTbY_e2UY/edit#slide=id.p)
-* [Tracking without Bells and Whistles Paper](https://arxiv.org/pdf/1903.05625.pdf)
-* [Meeting Notes](https://docs.google.com/presentation/d/1Qc-awR3Rm8LvFofIlVhyMQX5Vdfm6IE92jTrVlCi2Co/edit#slide=id.gccea4da259_0_415)
-* [Midterm Presentation Slides](https://docs.google.com/presentation/d/1muzkyLSw_7Nf9fOaegXsPI-R6865XZPMH31HjMHUhFw/edit#slide=id.gd2ad2b4450_5_3)
-* [Hand Label Pictures](https://github.com/qaprosoft/labelImg)
-* [Final Paper Outline](https://docs.google.com/document/d/186wmasgGrZnZuw9eYNlKpqqP2u3gKj774uPydnajW0o/edit?usp=sharing)
-* [Final Paper Overleaf](https://www.overleaf.com/project/60a10867b143f70445357d6f)
-* [Final Presentation](https://docs.google.com/presentation/d/1BE0HA_Y6XRBG14XwHTo9m5vSwsqMllhRKUUvcAC5g6w/edit#slide=id.gdd7fd61593_0_0)
-
-To set up google football simulation go to https://github.com/google-research/football
-
 ## Project Managment 
 In general, for every task do a github issue
 
