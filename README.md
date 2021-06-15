@@ -3,10 +3,7 @@
 </p>
 
 # 3D Vision Project: Soccer Ball Detection and Tracking
-## Marian, Jason, Miks & Jannik
-
-## Project Managment 
-In general, for every task do a github issue
+## Authors: Marian Kannwischer, Jason Corkill, Miks Ozols & Jannik Brun
 
 ## Quick Start 
 
